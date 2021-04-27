@@ -1,0 +1,18 @@
+#!/bin/bash
+
+echo "Beginning the denoising process for rendered scene - $1"
+
+# Convert files to pfm for OpenImage denoiser
+convert output/noisy_renders/$1.png -endian LSB PFM:output/noisy_renders/$1.pfm
+convert output/albedo_maps/$1.png -endian LSB PFM:output/albedo_maps/$1.pfm
+convert output/normal_maps/$1.png -endian LSB PFM:output/normal_maps/$1.pfm
+
+# Denoise 
+#./src/dependancies/bin/oidnDenoise -ldr output/noisy_renders/$1.pfm -alb output/albedo_maps/$1.pfm -nrm output/normal_maps/$1.pfm  -o output/denoised_renders/$1.pfm
+
+./src/dependancies/bin/oidnDenoise -ldr output/noisy_renders/$1.pfm -alb output/albedo_maps/$1.pfm -o output/denoised_renders/$1.pfm
+
+# Convert denoised output to PNG
+convert output/denoised_renders/$1.pfm output/denoised_renders/$1.png
+
+echo "Denoised render can be found at output/denoised_renders/$1.png"
