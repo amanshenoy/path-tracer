@@ -3,7 +3,6 @@
 <p align="center">
   <img src="output/denoised_renders/Marbles.png" />
   <img src="output/denoised_renders/Test.png" />
-  <img src="output/denoised_renders/GlowRoom.png" />
 </p>
 
 This repository contains the implementation of a brute force path tracer in C++. The project avoids the use of libraries and graphics API's (for the core path tracer) and attempts to implement simple physically based rendering effects from scratch. 
@@ -16,6 +15,9 @@ This repository contains the implementation of a brute force path tracer in C++.
 Ray Surface intersection routine has been implemented for Spheres, Planes, and Boxes; and basic transformations of these primitives. Other effects and features include 
 
 ## PBR (*Physically Based Rendering*) Effects 
+<p align="center">
+  <img src="output/denoised_renders/GlowRoom.png" />
+</p>
 
 * Materials 
   * Lambertian (Matte)
