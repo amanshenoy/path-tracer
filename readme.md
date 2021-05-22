@@ -5,14 +5,16 @@
   <img src="output/denoised_renders/Test.png" />
 </p>
 
-This repository contains the implementation of a brute force path tracer in C++. The project avoids the use of libraries and graphics API's (for the core path tracer) and attempts to implement simple physically based rendering effects from scratch. 
+This repository contains the implementation of a brute force path tracer in C++. The project avoids the use of libraries and graphics API's and attempts to implement simple physically based rendering effects from scratch. 
+
+This is a project I essentially come to when I have nothing better to do. If you have bothered reading the code, or tried to create a scene and have found any flaws or errors in the way things have been done -- do feel free to leave an issue! Feel free to leave an issue for any sort of suggestion too, if any.
 
 ## Primitives
 <p align="center">
   <img src="output/noisy_renders/VaryingFuzz.png" />
 </p>
 
-Ray Surface intersection routine has been implemented for Spheres, Planes, and Boxes; and basic transformations of these primitives. Other effects and features include 
+Ray Surface intersection routine has been implemented for Spheres, Planes, Boxes, Triangles, and Meshes (that can be represented as a collection of triangles); and basic transformations of these primitives. Other effects and features include 
 
 ## PBR (*Physically Based Rendering*) Effects 
 * Materials 
@@ -25,14 +27,17 @@ Ray Surface intersection routine has been implemented for Spheres, Planes, and B
   * Dielectrics (Refractive surfaces)
   * Constant Density Mediums (Smoke, etc.)
 
-## Some Other Features
+## Feature Tracker 
 
-* Motion Blur 
-* Antialiasing
-* Optimisations 
-  * Bounding Volume Heirarchies 
-  * Multithreading  
-* Depth of Field
+- [x] Motion Blur 
+- [x] Antialiasing
+- [x] Depth of Field
+- [x] Bounding Volume Heirarchies 
+- [x] Multithreading  
+- [ ] CUDA support 
+- [ ] Additional BSDF's and materials
+- [ ] Optimised Ray Triangle intersection routine
+- [ ] Better support for high poly objects
 
 ## Denoiser 
 
