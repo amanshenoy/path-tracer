@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <chrono>
+#include <future>
 
 #include "dependancies/glm/glm.hpp"
 #include "dependancies/FreeImage/FreeImage.h"
@@ -22,20 +23,21 @@
 #include "dependancies/colors.hpp"
 #include "scenes.hpp"
 
-void show_progress_bar(double progress, int progress_bar_width, int limit){
-    std::cout << BOLDCYAN << "[PROGRESS]" << BOLDGREEN << " [" << WHITE;  
+int show_progress_bar(double progress, int progress_bar_width, int limit){
+    std::cout << BOLDCYAN << "[ RENDER ]" << GREEN << " |" << WHITE;  
     double pos = (progress_bar_width * progress) / (limit);  
     
     for (int i = 0; i < progress_bar_width; ++i) {
         int local_progress = static_cast<int>(((pos - static_cast<int>(pos)) * 10));
-        if (i < static_cast<int>(pos)) std::cout << ">"; 
-        else if (i == static_cast<int>(pos)) std::cout << std::to_string(local_progress);
+        if (i <= static_cast<int>(pos)) std::cout << "▇"; 
+        else if (i == static_cast<int>(pos) + 1) std::cout << std::to_string(local_progress);
         else std::cout << " ";
     }
     std::cout.precision(4);
-    std::cout << GREEN << "] " << RESET << ((progress/limit) * 100.0) << "% \r";
+    std::cout << GREEN << "▎" << RESET << ((progress/limit) * 100.0) << "% \r";
     if (progress < limit - 1) std::cout.flush();
     else std::cout << "\n";
+    return 0; 
 }
 
 RGBQUAD write_maps(glm::vec3 map_color){
@@ -119,10 +121,10 @@ int main(int argc, char* argv[]){
     // Create scene and camera, and allocate memory for images
 
     double aspect_ratio; 
-    int height = 720; 
+    int height = 360; 
     int width; 
-    int samples_per_pixel = 200; 
-    int max_depth = 4;
+    int samples_per_pixel = 1; 
+    int max_depth = 10;
 
     glm::vec3 lookfrom = glm::vec3(278.0f, 278.0f, -800.0f);
     glm::vec3 lookat = glm::vec3(278.0f, 278.0f, 0.0f); 
@@ -137,6 +139,10 @@ int main(int argc, char* argv[]){
     FIBITMAP* albedo_map  = FreeImage_Allocate(width, height, 24); 
     FIBITMAP* normal_map  = FreeImage_Allocate(width, height, 24); 
 
+    std::string render_path = std::string("output/noisy_renders/") + scene + std::string(".png");
+    std::string albedo_path = std::string("output/albedo_maps/") + scene + std::string(".png");
+    std::string normal_path = std::string("output/normal_maps/") + scene + std::string(".png");
+
     glm::vec3 first_albedo, first_normal; 
     glm::vec3 background(0); 
 
@@ -146,19 +152,21 @@ int main(int argc, char* argv[]){
     auto start = std::chrono::high_resolution_clock::now(); 
     double progress = 0.0f;
 
+    // #pragma omp parallel for
     for (int i = 0; i < height; i++){
         for (int j = 0; j < width; j++){
             int row = j;
             int col = height - i; 
 
             int progress_bar_width = 70; 
+
+            #pragma omp critical
             show_progress_bar(progress, progress_bar_width, width * height);
             progress += 1; 
 
             glm::vec3 pixel_color(0);
 
             //////////////////////////////////////////////////////////////////////
-            // Multi-threaded loop for samples per pixel
 
             #pragma omp parallel for
             for (int s = 0; s < samples_per_pixel; ++s){
@@ -186,10 +194,6 @@ int main(int argc, char* argv[]){
 
     //////////////////////////////////////////////////////////////////////
     // Save renders and map images
-
-    std::string render_path = std::string("output/noisy_renders/") + scene + std::string(".png");
-    std::string albedo_path = std::string("output/albedo_maps/") + scene + std::string(".png");
-    std::string normal_path = std::string("output/normal_maps/") + scene + std::string(".png");
 
     write_image(render_path, image); 
     write_image(albedo_path, albedo_map);

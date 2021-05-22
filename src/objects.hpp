@@ -148,3 +148,39 @@ public:
     std::shared_ptr<Material> phase_fn;
     double neg_inv_dens; 
 };
+
+class Triangle: public Object{
+public:
+    Triangle() {};
+    Triangle(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2, std::shared_ptr<Material> mat)
+        : v_0(v0), v_1(v1), v_2(v2), normal(glm::normalize(glm::cross(v1 - v0, v2 - v0))), mat(mat) {}
+    Triangle(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2, glm::vec3 n, std::shared_ptr<Material> mat)
+        : v_0(v0), v_1(v1), v_2(v2), normal(n), mat(mat) {}
+
+    virtual bool hit(const Ray& ray, double t_min, double t_max, hit_details& rec) override;
+    virtual bool bounding_box(double time0, double time1, AABB& output_box) override;
+
+public: 
+    glm::vec3 v_0, v_1, v_2; 
+    glm::vec3 normal; 
+    std::shared_ptr<Material> mat; 
+};
+
+class Mesh: public Object{
+public:
+    Mesh() {};
+    Mesh(std::string obj_path, std::shared_ptr<Material> material, bool evaluate_normals);
+    Mesh(std::string obj_path, std::shared_ptr<Material> material);
+    void parser(bool evaluate_normals);
+    Scene get_mesh(); 
+
+    virtual bool hit(const Ray& ray, double t_min, double t_max, hit_details& rec) override;
+    virtual bool bounding_box(double time0, double time1, AABB& output_box) override;
+
+public:
+    std::string path; 
+    std::vector<glm::vec3> vertices, normals; 
+    std::vector<unsigned int> indices; 
+    Scene mesh; 
+    std::shared_ptr<Material> mat; 
+}; 

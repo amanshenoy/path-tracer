@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
+#include "dependancies/colors.hpp"
 #include "objects.hpp"
 
 bool Sphere::hit(const Ray& ray, double t_min, double t_max, hit_details& rec) {
@@ -106,7 +108,6 @@ bool RectangleYZ::bounding_box(double time0, double time1, AABB& output_box) {
     return true;
 }
 
-
 bool RectangleXZ::hit(const Ray& ray, double t_min, double t_max, hit_details& rec) {
     double t = (k - ray.origin().y) / ray.direction().y;
     if (t < t_min || t > t_max)
@@ -130,6 +131,142 @@ bool RectangleXZ::hit(const Ray& ray, double t_min, double t_max, hit_details& r
 
 bool RectangleXZ::bounding_box(double time0, double time1, AABB& output_box) {
     output_box = AABB(glm::vec3(x1, z1, k - 0.0001), glm::vec3(x2, z2, k + 0.0001));
+    return true;
+}
+bool Triangle::hit(const Ray& ray, double t_min, double t_max, hit_details& rec) {
+    glm::vec3 local_normal; 
+    double n_dot_ray_dir = glm::dot(normal, ray.direction());
+
+    // parallel 
+    if (fabs(n_dot_ray_dir) < 0.0001) return false;
+    if (n_dot_ray_dir < 0) local_normal = -normal;
+    else local_normal = normal;
+    
+    double d = glm::dot(-local_normal, v_0); 
+    double t = -(glm::dot(local_normal, ray.origin()) + d) / fabs(n_dot_ray_dir); 
+
+    if (t < t_min || t > t_max)
+        return false;
+    
+    rec.t = t;
+    rec.p = ray.at(t);
+
+    glm::vec3 C; 
+
+    // edge 0
+    glm::vec3 edge0 = v_1 - v_0; 
+    glm::vec3 vp0 = rec.p - v_0;
+    C = glm::cross(edge0, vp0); 
+    if (glm::dot(local_normal, C) < 0) return false; // P is on the right side 
+ 
+    // edge 1
+    glm::vec3 edge1 = v_2 - v_1; 
+    glm::vec3 vp1 = rec.p - v_1;
+    C = glm::cross(edge1, vp1); 
+    if (glm::dot(local_normal, C) < 0)  return false; // P is on the right side 
+ 
+    // edge 2
+    glm::vec3 edge2 = v_0 - v_2; 
+    glm::vec3 vp2 = rec.p - v_2; 
+    C = glm::cross(edge2, vp2); 
+    if (glm::dot(local_normal, C) < 0) return false; // P is on the right side; 
+    
+    glm::vec3 outward_normal = -local_normal;
+    rec.set_face(ray, outward_normal); 
+    rec.mat_ptr = mat;
+ 
+    return true;
+}
+
+bool Triangle::bounding_box(double time0, double time1, AABB& output_box) 
+{
+    double min_x = std::min({v_0.x, v_1.x, v_2.x});
+    double min_y = std::min({v_0.y, v_1.y, v_2.y});
+    double min_z = std::min({v_0.z, v_1.z, v_2.z});
+
+    double max_x = std::max({v_0.x, v_1.x, v_2.x});
+    double max_y = std::max({v_0.y, v_1.y, v_2.y});
+    double max_z = std::max({v_0.z, v_1.z, v_2.z});
+
+    output_box = AABB(glm::vec3(min_x - 0.0001, min_y - 0.0001, min_z - 0.0001), glm::vec3(max_x + 0.0001, max_y + 0.0001, max_z + 0.0001)); 
+    return true;
+}
+
+Mesh::Mesh(std::string obj_path, std::shared_ptr<Material> material){
+    path = obj_path; 
+    mat = material; 
+    parser(true); 
+}
+
+Mesh::Mesh(std::string obj_path, std::shared_ptr<Material> material, bool evaluate_normals){
+    path = obj_path; 
+    mat = material; 
+    parser(evaluate_normals); 
+}
+
+void Mesh::parser(bool evaluate_normals){
+	FILE* fp;
+	float x, y, z;
+	int fx, fy, fz, ignore;
+	int c1, c2;
+	float minY = INFINITY, minZ = INFINITY;
+	float maxY = -INFINITY, maxZ = -INFINITY;
+
+	fp = fopen(path.c_str(), "rb");
+	if (fp == NULL){
+		std::cerr << BOLDCYAN << "[ STATUS ] " << RESET << "Error loading file: " << path << "; probably does not exist" << std::endl;
+		exit(-1);
+	}
+
+	while (!feof(fp)){
+		c1 = fgetc(fp);
+		while (!(c1 == 'v' || c1 == 'f')) {
+			c1 = fgetc(fp);
+			if (feof(fp))
+				break;
+		}
+		c2 = fgetc(fp);
+		if ((c1 == 'v') && (c2 == ' ')) {
+			fscanf(fp, "%f %f %f", &x, &y, &z);
+			vertices.push_back(glm::vec3(x, y, z));
+			if (y < minY) minY = y;
+			if (z < minZ) minZ = z;
+			if (y > maxY) maxY = y;
+			if (z > maxZ) maxZ = z;
+		}
+		else if ((c1 == 'v') && (c2 == 'n')) {
+			fscanf(fp, "%f %f %f", &x, &y, &z);
+			normals.push_back(glm::normalize(glm::vec3(x, y, z)));
+		}
+		else if (c1 == 'f'){
+			fscanf(fp, "%d//%d %d//%d %d//%d", &fx, &ignore, &fy, &ignore, &fz, &ignore);
+			indices.push_back(fx - 1);
+			indices.push_back(fy - 1);
+			indices.push_back(fz - 1);
+            
+            glm::vec3 averaged_normal = (normals[fx - 1] + normals[fy - 1] + normals[fz - 1]) / 3.0f;
+            if (evaluate_normals) mesh.add(std::make_shared<Triangle>(vertices[fy - 1], vertices[fx - 1], vertices[fz - 1], mat)); 
+            else mesh.add(std::make_shared<Triangle>(vertices[fy - 1], vertices[fx - 1], vertices[fz - 1], averaged_normal, mat)); 
+		}
+	}
+    std::cout << BOLDCYAN << "[ STATUS ]" << RESET << " Loaded object from " << path << " (" << vertices.size() << " Vertices, " << indices.size() / 3 << " Faces) "<< std::endl; 
+
+	fclose(fp); 
+}
+
+Scene Mesh::get_mesh() 
+{
+    return mesh; 
+}
+
+bool Mesh::hit(const Ray& ray, double t_min, double t_max, hit_details& rec) 
+{
+    return mesh.hit(ray, t_min, t_max, rec); 
+}
+
+bool Mesh::bounding_box(double time0, double time1, AABB& output_box) 
+{
+    mesh.bounding_box(time0, time1, output_box); 
     return true;
 }
 
@@ -230,7 +367,6 @@ RotateY::RotateY(std::shared_ptr<Object> p, double angle) : ptr(p){
             }
         }
     }
-
     bbox = AABB(min, max);
 }
 
@@ -321,3 +457,4 @@ bool ConstantMedium::hit(const Ray& ray, double t_min, double t_max, hit_details
 bool ConstantMedium::bounding_box(double time0, double time1, AABB& output_box) {
     return boundary -> bounding_box(time0, time1, output_box);
 }
+

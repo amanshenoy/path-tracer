@@ -1,6 +1,8 @@
 # Ray Tracer from Scratch
 
 <p align="center">
+  <img src="output/denoised_renders/Marbles.png" />
+  <img src="output/denoised_renders/Test.png" />
   <img src="output/denoised_renders/GlowRoom.png" />
 </p>
 
