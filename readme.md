@@ -47,6 +47,9 @@ The images shown above are denoised using [Intel® Open Image Denoise](https://w
 The pre-compiled zip file (unzipped, includes a `bin` and a `lib` folder) needs to be moved into `src/dependancies/`, for the shell script `denoise` to work. 
 
 ## Usage
+<p align="center">
+  <img src="output/noisy_renders/GlowRoom.png" />
+</p>
 
 A sample binary has been uploaded with the repo (compiled on x86, as a 64 bit application), but its unlikely that it would generally work even on a system with the same configuration (try anyway, it just might). To compile in a device specific manner, you can create a Makefile using cmake (`CMakeLists.txt` given). 
 
