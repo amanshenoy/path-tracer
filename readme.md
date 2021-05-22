@@ -7,7 +7,7 @@
 
 This repository contains the implementation of a brute force path tracer in C++. The project avoids the use of libraries and graphics API's and attempts to implement simple physically based rendering effects from scratch. 
 
-This is a project I essentially come to when I have nothing better to do. If you have bothered reading the code, or tried to create a scene and have found any flaws or errors in the way things have been done -- do feel free to leave an issue! Feel free to leave an issue for any sort of suggestion too, if any.
+This is a project I essentially come to when I have nothing better to do. If you have read the code, or tried to create a scene and have found any flaws or errors in the way things have been done — do feel free to leave an issue! Feel free to leave an issue for any sort of suggestion too, if any.
 
 ## Primitives
 <p align="center">
