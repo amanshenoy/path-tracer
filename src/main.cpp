@@ -152,7 +152,7 @@ int main(int argc, char* argv[]){
     auto start = std::chrono::high_resolution_clock::now(); 
     double progress = 0.0f;
 
-    // #pragma omp parallel for
+    #pragma omp parallel for
     for (int i = 0; i < height; i++){
         for (int j = 0; j < width; j++){
             int row = j;
