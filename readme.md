@@ -1,11 +1,11 @@
-# Ray Tracer from Scratch
+# Path Tracer 
 
 <p align="center">
   <img src="output/denoised_renders/Marbles.png" />
   <img src="output/denoised_renders/Test.png" />
 </p>
 
-This repository contains the implementation of a brute force path tracer in C++. The project avoids the use of libraries and graphics API's and attempts to implement simple physically based rendering effects from scratch. 
+This repository contains the implementation of a physically based monte carlo path tracer in C++. The project avoids the use of libraries and graphics API's, and attempts to implement simple physically based rendering effects from scratch. 
 
 This is a project I essentially come to in my free time and is something I intend to update sporadically. If you have read the code, or tried to create a scene and have found any flaws or errors in the way things have been done — do feel free to leave an issue! Feel free to leave an issue for any sort of suggestion too, if any.
 
@@ -75,5 +75,4 @@ A simple `OpenMP` call was used to multithread the loop which shoots multiple sa
 
 The project uses libraries for reading and writing images ([stb_image](https://github.com/nothings/stb) and [FreeImage](https://freeimage.sourceforge.io/)) and for convenience. [GLM](https://github.com/g-truc/glm) was used for mathematical data types (vectors, matrices, etc.) and operations, but can easily be replaced by a few structs. [ImageMagick](https://github.com/ImageMagick/ImageMagick) is also required for commands in the `denoise` shell script.
 
-This project takes a lot from [this](https://www.edx.org/course/computer-graphics-2) course and the repository and code largely takes its structure and features from [this](https://raytracing.github.io/) book series.
-
+This project takes a lot from Ravi Ramamoorthi's course - [An intro to graphics](https://www.edx.org/course/computer-graphics-2); and the repository and code largely takes its structure and features from [Peter Shirley's book series](https://raytracing.github.io/).
