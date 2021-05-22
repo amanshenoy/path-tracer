@@ -292,7 +292,7 @@ Scene GetScene(double& aspect_ratio, glm::vec3& lookfrom, glm::vec3& lookat, int
 
         objects.add(std::make_shared<Sphere>(glm::vec3(glm::vec3(3, - sqrt(3) - 0.1, -1.0)), 0.9, red_metal));
 
-        auto ico_mesh = std::make_shared<Mesh>("objects/ico.obj", hazy_gold);
+        auto ico_mesh = std::make_shared<Mesh>("res/objects/ico.obj", hazy_gold);
         std::shared_ptr<Object> ico = std::make_shared<BVHNode>(ico_mesh -> mesh, 0, 1);
         ico = std::make_shared<RotateY>(ico, 165);
         ico = std::make_shared<Translate>(ico, glm::vec3(0.35 - 0.3, -0.25 + 0.3, -1));
@@ -340,13 +340,13 @@ Scene GetScene(double& aspect_ratio, glm::vec3& lookfrom, glm::vec3& lookat, int
         objects.add(turqoise_ball);
         objects.add(std::make_shared<ConstantMedium>(turqoise_ball, 0.9, glm::vec3(0, 206.0f/255.0f, 209.0f/255.0f)));  
 
-        auto teapot_mesh = std::make_shared<Mesh>("objects/teapot.obj", red_metal, false);
+        auto teapot_mesh = std::make_shared<Mesh>("res/objects/teapot.obj", red_metal, false);
         std::shared_ptr<Object> teapot = std::make_shared<BVHNode>(teapot_mesh -> mesh, 0, 1);
         teapot = std::make_shared<RotateY>(teapot, 165);
         teapot = std::make_shared<Translate>(teapot, glm::vec3(1, 0, 0.5));
         objects.add(teapot); 
 
-        auto bunny_mesh = std::make_shared<Mesh>("objects/bunny.obj", hazy_gold, true);
+        auto bunny_mesh = std::make_shared<Mesh>("res/objects/bunny.obj", hazy_gold, true);
         std::shared_ptr<Object> bunny = std::make_shared<BVHNode>(bunny_mesh -> mesh, 0, 1);
         bunny = std::make_shared<RotateY>(bunny, 120);
         bunny = std::make_shared<Translate>(bunny, glm::vec3(-0.5, 0, -1));
