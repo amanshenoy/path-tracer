@@ -7,7 +7,7 @@
 
 This repository contains the implementation of a brute force path tracer in C++. The project avoids the use of libraries and graphics API's and attempts to implement simple physically based rendering effects from scratch. 
 
-This is a project I essentially come to when I have nothing better to do. If you have read the code, or tried to create a scene and have found any flaws or errors in the way things have been done — do feel free to leave an issue! Feel free to leave an issue for any sort of suggestion too, if any.
+This is a project I essentially come to in my free time and is something I intend to update sporadically. If you have read the code, or tried to create a scene and have found any flaws or errors in the way things have been done — do feel free to leave an issue! Feel free to leave an issue for any sort of suggestion too, if any.
 
 ## Primitives
 <p align="center">
@@ -33,7 +33,8 @@ Ray Surface intersection routine has been implemented for Spheres, Planes, Boxes
 - [x] Antialiasing
 - [x] Depth of Field
 - [x] Bounding Volume Heirarchies 
-- [x] Multithreading  
+- [x] Multithreading
+- [x] Add `.obj` object support   
 - [ ] CUDA support 
 - [ ] Additional BSDF's and materials
 - [ ] Optimised Ray Triangle intersection routine
