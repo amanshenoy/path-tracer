@@ -178,9 +178,13 @@ public:
     virtual bool bounding_box(double time0, double time1, AABB& output_box) override;
 
 public:
-    std::string path; 
+	float minX = INFINITY, minY = INFINITY, minZ = INFINITY;
+	float maxX = -INFINITY, maxY = -INFINITY, maxZ = -INFINITY;    
+    std::string path;
+    // AABB bounding_aabb; 
+    // std::shared_ptr<AABB> bounding_aabb; 
     std::vector<glm::vec3> vertices, normals; 
     std::vector<unsigned int> indices; 
-    Scene mesh; 
+    Scene mesh;
     std::shared_ptr<Material> mat; 
 }; 

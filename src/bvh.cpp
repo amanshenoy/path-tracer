@@ -21,10 +21,17 @@ bool BVHNode::hit(const Ray& r, double t_min, double t_max, hit_details& rec){
     return hit_left || hit_right;
 }
 
-BVHNode::BVHNode(std::vector<std::shared_ptr<Object>>& src_objects, size_t start, size_t end, double time0, double time1) {
+BVHNode::BVHNode(std::vector<std::shared_ptr<Object>>& src_objects, size_t start, size_t end, double time0, double time1, double node_id) {
     auto objects = src_objects; // Create a modifiable array of the source scene objects
 
-    int axis = random_int(0,2);
+    // int axis = random_int(0,2);
+    int progress_bar_width = 70; 
+
+    // #pragma omp critical
+    show_tree_building(node_id, progress_bar_width, floor(log2(static_cast<int>(objects.size()))) * 2 + 1);
+    // std::cout << node_id<< std::endl; 
+    // node_id += 1; 
+    int axis = 0; 
     auto comparator = (axis == 0) ? box_x_compare : (axis == 1) ? box_y_compare
                                   : box_z_compare;
 
@@ -44,8 +51,10 @@ BVHNode::BVHNode(std::vector<std::shared_ptr<Object>>& src_objects, size_t start
         std::sort(objects.begin() + start, objects.begin() + end, comparator);
 
         auto mid = start + object_span/2;
-        left = std::make_shared<BVHNode>(objects, start, mid, time0, time1);
-        right = std::make_shared<BVHNode>(objects, mid, end, time0, time1);
+        // #pragma omp critical
+        // #pragma omp parallel 
+        left = std::make_shared<BVHNode>(objects, start, mid, time0, time1, node_id + 1);
+        right = std::make_shared<BVHNode>(objects, mid, end, time0, time1, node_id + 2);
     }
 
     AABB box_left, box_right;
@@ -56,6 +65,22 @@ BVHNode::BVHNode(std::vector<std::shared_ptr<Object>>& src_objects, size_t start
         std::cerr << "No bounding box in bvh_node constructor.\n";
 
     box = surrounding_box(box_left, box_right);
+}
+
+BVHNode::BVHNode(const std::shared_ptr<Mesh>& mesh, double time0, double time1) 
+{ 
+    // mesh -> bounding_box(0, 1, temp_box);
+    // box = temp_box; 
+    // std::cout << box << std::endl; 
+    // temp_box = AABB(glm::vec3(mesh -> minX - 0.0001, mesh -> minY- 0.0001, mesh -> minZ- 0.0001), glm::vec3(mesh -> maxX + 0.0001, mesh -> maxY + 0.0001, mesh -> maxZ + 0.0001)); 
+    AABB temp_box; 
+    if (!mesh->bounding_box (time0, time1, temp_box))
+        std::cerr << "No bounding box in bvh_node constructor.\n";
+    // temp_box = AABB(glm::vec3(0), glm::vec3(0.1)); 
+    // box = temp_box; 
+    // temp_box = surrounding_box(temp_box, temp_box); 
+    left = right = mesh; 
+    box = temp_box; 
 }
 
 

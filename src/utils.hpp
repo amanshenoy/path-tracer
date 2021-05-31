@@ -23,6 +23,10 @@ public:
     void set_face(const Ray& ray, const glm::vec3& outward_normal); 
 };
 
+int show_progress_bar(double progress, int progress_bar_width, int limit);
+
+int show_tree_building(double progress, int progress_bar_width, int limit);
+
 double random_double();
 
 double random_double(double min, double max);

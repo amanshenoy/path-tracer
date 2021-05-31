@@ -1,8 +1,44 @@
 #include <iostream>
 
 #include "dependancies/glm/glm.hpp"
+#include "dependancies/colors.hpp"
 
 #include "utils.hpp"
+
+int show_progress_bar(double progress, int progress_bar_width, int limit){
+    std::cout << BOLDCYAN << "[ RENDER ]" << GREEN << " |" << WHITE;  
+    double pos = (progress_bar_width * progress) / (limit);  
+    
+    for (int i = 0; i < progress_bar_width; ++i) {
+        int local_progress = static_cast<int>(((pos - static_cast<int>(pos)) * 10));
+        if (i <= static_cast<int>(pos)) std::cout << "▇"; 
+        else if (i == static_cast<int>(pos) + 1) std::cout << std::to_string(local_progress);
+        else std::cout << " ";
+    }
+    std::cout.precision(4);
+    std::cout << GREEN << "▎" << RESET << ((progress/limit) * 100.0) << "% \r";
+    if (progress < limit - 1) std::cout.flush();
+    else std::cout << "\n";
+    return 0; 
+}
+
+int show_tree_building(double progress, int progress_bar_width, int limit){
+    std::cout << BOLDCYAN << "[BVH TREE]" << GREEN << " |" << WHITE;  
+    double pos = (progress_bar_width * progress) / (limit);  
+    
+    for (int i = 0; i < progress_bar_width; ++i) {
+        int local_progress = static_cast<int>(((pos - static_cast<int>(pos)) * 10));
+        if (i <= static_cast<int>(pos)) std::cout << "▇"; 
+        else if (i == static_cast<int>(pos) + 1) std::cout << GREEN << "▇" << WHITE;
+        else std::cout << " ";
+    }
+    std::cout.precision(4);
+    std::cout << GREEN << "▎" << RESET << "\r";
+    if (progress < limit - 1) std::cout.flush();
+    else std::cout << "\n";
+    return 0; 
+}
+
 
 void hit_details::set_face(const Ray& ray, const glm::vec3& outward_normal) {
     front_face = glm::dot(ray.direction(), outward_normal) < 0;

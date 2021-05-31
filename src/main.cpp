@@ -23,22 +23,8 @@
 #include "dependancies/colors.hpp"
 #include "scenes.hpp"
 
-int show_progress_bar(double progress, int progress_bar_width, int limit){
-    std::cout << BOLDCYAN << "[ RENDER ]" << GREEN << " |" << WHITE;  
-    double pos = (progress_bar_width * progress) / (limit);  
-    
-    for (int i = 0; i < progress_bar_width; ++i) {
-        int local_progress = static_cast<int>(((pos - static_cast<int>(pos)) * 10));
-        if (i <= static_cast<int>(pos)) std::cout << "▇"; 
-        else if (i == static_cast<int>(pos) + 1) std::cout << std::to_string(local_progress);
-        else std::cout << " ";
-    }
-    std::cout.precision(4);
-    std::cout << GREEN << "▎" << RESET << ((progress/limit) * 100.0) << "% \r";
-    if (progress < limit - 1) std::cout.flush();
-    else std::cout << "\n";
-    return 0; 
-}
+extern int progress_bar_width; 
+extern int height, width; 
 
 RGBQUAD write_maps(glm::vec3 map_color){
     RGBQUAD color; 
@@ -121,9 +107,9 @@ int main(int argc, char* argv[]){
     // Create scene and camera, and allocate memory for images
 
     double aspect_ratio; 
-    int height = 360; 
-    int width; 
-    int samples_per_pixel = 1; 
+    int height = 360;
+    int width;  
+    int samples_per_pixel = 50; 
     int max_depth = 10;
 
     glm::vec3 lookfrom = glm::vec3(278.0f, 278.0f, -800.0f);
@@ -131,7 +117,8 @@ int main(int argc, char* argv[]){
     glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
     double fovy = 40.0; 
 
-    std::string scene = argv[1]; 
+    // std::string scene = argv[1];
+    std::string scene = "Other"; 
     Scene world = GetScene(aspect_ratio, lookfrom, lookat, height, width, fovy, scene);
     Camera cam(fovy, aspect_ratio, lookfrom, lookat, up, 0.0f, glm::length(lookfrom - lookat), 0.0f, 1.0f); 
 

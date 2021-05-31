@@ -209,8 +209,8 @@ void Mesh::parser(bool evaluate_normals){
 	float x, y, z;
 	int fx, fy, fz, ignore;
 	int c1, c2;
-	float minY = INFINITY, minZ = INFINITY;
-	float maxY = -INFINITY, maxZ = -INFINITY;
+	minX = INFINITY, minY = INFINITY, minZ = INFINITY;
+	maxX = -INFINITY, maxY = -INFINITY, maxZ = -INFINITY;
 
 	fp = fopen(path.c_str(), "rb");
 	if (fp == NULL){
@@ -229,8 +229,11 @@ void Mesh::parser(bool evaluate_normals){
 		if ((c1 == 'v') && (c2 == ' ')) {
 			fscanf(fp, "%f %f %f", &x, &y, &z);
 			vertices.push_back(glm::vec3(x, y, z));
+			if (x < minX) minX = x;
 			if (y < minY) minY = y;
 			if (z < minZ) minZ = z;
+
+			if (x > maxX) maxX = x;
 			if (y > maxY) maxY = y;
 			if (z > maxZ) maxZ = z;
 		}
@@ -250,6 +253,7 @@ void Mesh::parser(bool evaluate_normals){
 		}
 	}
     std::cout << BOLDCYAN << "[ STATUS ]" << RESET << " Loaded object from " << path << " (" << vertices.size() << " Vertices, " << indices.size() / 3 << " Faces) "<< std::endl; 
+    // auto bounding_aabb = AABB(glm::vec3(minX, minY, minZ), glm::vec3(maxX, maxY, maxZ));
 
 	fclose(fp); 
 }
@@ -266,7 +270,9 @@ bool Mesh::hit(const Ray& ray, double t_min, double t_max, hit_details& rec)
 
 bool Mesh::bounding_box(double time0, double time1, AABB& output_box) 
 {
-    mesh.bounding_box(time0, time1, output_box); 
+    output_box = AABB(glm::vec3(minX - 0.0001, minY- 0.0001, minZ- 0.0001), glm::vec3(maxX + 0.0001, maxY + 0.0001, maxZ + 0.0001));  
+    // output_box = AABB(glm::vec3( - 0.1, - 0.1, - 0.1), glm::vec3( + 0.1, + 0.1, + 0.1));  
+
     return true;
 }
 

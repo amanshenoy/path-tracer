@@ -33,12 +33,13 @@ Ray Surface intersection routine has been implemented for Spheres, Planes, Boxes
 - [x] Antialiasing
 - [x] Depth of Field
 - [x] Bounding Volume Heirarchies 
-- [x] Multithreading
+- [x] Multithread pixel processing
 - [x] Add `.obj` object support   
-- [ ] CUDA support 
-- [ ] Additional BSDF's and materials
-- [ ] Optimised Ray Triangle intersection routine
-- [ ] Better support for high poly objects
+- [ ] Find a way to serialize BVH tree object (for re-use for large meshes) 
+- [ ] Optimize and Multithread mesh BVH tree building 
+- [ ] Optimize ray-triangle intersection routine 
+- [ ] Implement additional BSDF's and materials
+- [ ] Incorporate CUDA, get full rendering to happen on GPU
 
 ## Denoiser 
 
