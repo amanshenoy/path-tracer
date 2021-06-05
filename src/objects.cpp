@@ -133,6 +133,7 @@ bool RectangleXZ::bounding_box(double time0, double time1, AABB& output_box) {
     output_box = AABB(glm::vec3(x1, z1, k - 0.0001), glm::vec3(x2, z2, k + 0.0001));
     return true;
 }
+
 bool Triangle::hit(const Ray& ray, double t_min, double t_max, hit_details& rec) {
     glm::vec3 local_normal; 
     double n_dot_ray_dir = glm::dot(normal, ray.direction());
@@ -178,8 +179,7 @@ bool Triangle::hit(const Ray& ray, double t_min, double t_max, hit_details& rec)
     return true;
 }
 
-bool Triangle::bounding_box(double time0, double time1, AABB& output_box) 
-{
+bool Triangle::bounding_box(double time0, double time1, AABB& output_box) {
     double min_x = std::min({v_0.x, v_1.x, v_2.x});
     double min_y = std::min({v_0.y, v_1.y, v_2.y});
     double min_z = std::min({v_0.z, v_1.z, v_2.z});
@@ -253,26 +253,19 @@ void Mesh::parser(bool evaluate_normals){
 		}
 	}
     std::cout << BOLDCYAN << "[ STATUS ]" << RESET << " Loaded object from " << path << " (" << vertices.size() << " Vertices, " << indices.size() / 3 << " Faces) "<< std::endl; 
-    // auto bounding_aabb = AABB(glm::vec3(minX, minY, minZ), glm::vec3(maxX, maxY, maxZ));
-
 	fclose(fp); 
 }
 
-Scene Mesh::get_mesh() 
-{
+Scene Mesh::get_mesh() {
     return mesh; 
 }
 
-bool Mesh::hit(const Ray& ray, double t_min, double t_max, hit_details& rec) 
-{
+bool Mesh::hit(const Ray& ray, double t_min, double t_max, hit_details& rec) {
     return mesh.hit(ray, t_min, t_max, rec); 
 }
 
-bool Mesh::bounding_box(double time0, double time1, AABB& output_box) 
-{
+bool Mesh::bounding_box(double time0, double time1, AABB& output_box) {
     output_box = AABB(glm::vec3(minX - 0.0001, minY- 0.0001, minZ- 0.0001), glm::vec3(maxX + 0.0001, maxY + 0.0001, maxZ + 0.0001));  
-    // output_box = AABB(glm::vec3( - 0.1, - 0.1, - 0.1), glm::vec3( + 0.1, + 0.1, + 0.1));  
-
     return true;
 }
 
@@ -463,4 +456,3 @@ bool ConstantMedium::hit(const Ray& ray, double t_min, double t_max, hit_details
 bool ConstantMedium::bounding_box(double time0, double time1, AABB& output_box) {
     return boundary -> bounding_box(time0, time1, output_box);
 }
-

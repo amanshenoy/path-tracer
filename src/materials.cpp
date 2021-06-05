@@ -14,14 +14,14 @@ glm::vec3 refract_ray(glm::vec3& uv, const glm::vec3& n, double ratio){
     return ray_out_perp + ray_out_parallel;  
 }
 
-bool Metal::scatter(const Ray& ray_in, const hit_details& rec, glm::vec3& attenuation, Ray& scattered) {
+bool Metal::bsdf(const Ray& ray_in, const hit_details& rec, glm::vec3& attenuation, Ray& scattered) {
     glm::vec3 reflected = reflect_ray(glm::normalize(ray_in.direction()), rec.normal);
     scattered = Ray(rec.p, reflected + static_cast<float>(fuzz) * random_in_unit_sphere(), ray_in.time());
     attenuation = albedo;
     return (glm::dot(scattered.direction(), rec.normal) > 0); 
 }
 
-bool Dielectric::scatter(const Ray& ray_in, const hit_details& rec, glm::vec3& attenuation, Ray& scattered) {
+bool Dielectric::bsdf(const Ray& ray_in, const hit_details& rec, glm::vec3& attenuation, Ray& scattered) {
     attenuation = glm::vec3(1.0);
     float refraction_ratio = rec.front_face ? (1.0 / ir) : ir;
 
@@ -42,12 +42,13 @@ bool Dielectric::scatter(const Ray& ray_in, const hit_details& rec, glm::vec3& a
 }
 
 double Dielectric::reflectance(double cosine, double ref_idx) {
+    // Schlick approximation  
     double r0 = (1 - ref_idx) / (1 + ref_idx); 
     r0 = r0 * r0; 
     return r0 + (1 - r0) * pow(1 - cosine, 5);
 }
 
-bool Lambertian::scatter(const Ray& ray_in, const hit_details& rec, glm::vec3& attenuation, Ray& scattered) {
+bool Lambertian::bsdf(const Ray& ray_in, const hit_details& rec, glm::vec3& attenuation, Ray& scattered) {
     glm::vec3 scatter_dirn = random_in_hemisphere(rec.normal);
 
     if (near_zero(scatter_dirn))
@@ -58,7 +59,15 @@ bool Lambertian::scatter(const Ray& ray_in, const hit_details& rec, glm::vec3& a
     return true; 
 }
 
-bool Isotropic::scatter(const Ray& ray_in, const hit_details& rec, glm::vec3& attenuation, Ray& scattered) {
+bool Glossy::bsdf(const Ray& ray_in, const hit_details& rec, glm::vec3& attenuation, Ray& scattered) {
+    glm::vec3 reflected = reflect_ray(glm::normalize(ray_in.direction()), rec.normal);
+    glm::vec3 scatter_dirn = reflected + static_cast<float>(sharpness) * random_in_hemisphere(reflected);
+    scattered = Ray(rec.p, scatter_dirn, ray_in.time());
+    attenuation = albedo -> value(rec.u, rec.v, rec.p);
+    return true; 
+}
+
+bool Isotropic::bsdf(const Ray& ray_in, const hit_details& rec, glm::vec3& attenuation, Ray& scattered) {
     scattered = Ray(rec.p, random_in_unit_sphere(), ray_in.time());
     attenuation = albedo->value(rec.u, rec.v, rec.p);
     return true;

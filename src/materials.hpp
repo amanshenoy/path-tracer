@@ -10,7 +10,7 @@ glm::vec3 refract_ray(glm::vec3& ray_in, const glm::vec3& n, double ratio);
 
 class Material {
 public:
-    virtual bool scatter(const Ray& ray_in, const hit_details& rec, glm::vec3& attenuation, Ray& scattered) = 0;
+    virtual bool bsdf(const Ray& ray_in, const hit_details& rec, glm::vec3& attenuation, Ray& scattered) = 0;
     virtual glm::vec3 emitted(double u, double v, const glm::vec3& p) = 0;
 };
 
@@ -71,7 +71,7 @@ class Emitter : public Material {
         Emitter(std::shared_ptr<Texture> a) : emit(a) {}
         Emitter(glm::vec3 c) : emit(std::make_shared<SolidColor>(c)) {}
 
-        virtual bool scatter(
+        virtual bool bsdf(
             const Ray& r_in, const hit_details& rec, glm::vec3& attenuation, Ray& scattered
         ) override {
             return false;
@@ -89,7 +89,7 @@ class Emitter : public Material {
 class Metal : public Material {
 public:
     Metal(const glm::vec3& a, double f) : albedo(a), fuzz(f < 1 ? f : 1){}
-    virtual bool scatter(const Ray& ray_in, const hit_details& rec, glm::vec3& attenuation, Ray& scattered) override;
+    virtual bool bsdf(const Ray& ray_in, const hit_details& rec, glm::vec3& attenuation, Ray& scattered) override;
     inline virtual glm::vec3 emitted(double u, double v, const glm::vec3& p) override { return glm::vec3(0,0,0);}
 
 public: 
@@ -100,7 +100,7 @@ public:
 class Dielectric : public Material {
 public:
     Dielectric(double refraction_index, double f) : ir(refraction_index), fuzz(f < 1 ? f : 1){}
-    virtual bool scatter(const Ray& ray_in, const hit_details& rec, glm::vec3& attenuation, Ray& scattered) override;
+    virtual bool bsdf(const Ray& ray_in, const hit_details& rec, glm::vec3& attenuation, Ray& scattered) override;
     inline virtual glm::vec3 emitted(double u, double v, const glm::vec3& p) override { return glm::vec3(0,0,0);}
 
 public: 
@@ -116,7 +116,7 @@ public:
     Lambertian(const glm::vec3& a) : albedo(std::make_shared<SolidColor>(a)){}
     Lambertian(std::shared_ptr<Texture> a) : albedo(a) {}
 
-    virtual bool scatter(const Ray& ray_in, const hit_details& rec, glm::vec3& attenuation, Ray& scattered) override;
+    virtual bool bsdf(const Ray& ray_in, const hit_details& rec, glm::vec3& attenuation, Ray& scattered) override;
     inline virtual glm::vec3 emitted(double u, double v, const glm::vec3& p) override { return glm::vec3(0,0,0);}
 
 public: 
@@ -128,9 +128,44 @@ public:
     Isotropic(glm::vec3 c) : albedo(std::make_shared<SolidColor>(c)) {}
     Isotropic(std::shared_ptr<Texture> a) : albedo(a) {}
 
-    virtual bool scatter(const Ray& ray_in, const hit_details& rec, glm::vec3& attenuation, Ray& scattered) override;
+    virtual bool bsdf(const Ray& ray_in, const hit_details& rec, glm::vec3& attenuation, Ray& scattered) override;
     inline virtual glm::vec3 emitted(double u, double v, const glm::vec3& p) override { return glm::vec3(0,0,0);}
 
 public:
     std::shared_ptr<Texture> albedo;
 };
+
+class Glossy : public Material {
+public:
+    Glossy(const glm::vec3& a, double sharpness) : albedo(std::make_shared<SolidColor>(a)){}
+    Glossy(std::shared_ptr<Texture> a, double sharpness) : albedo(a) {}
+
+    virtual bool bsdf(const Ray& ray_in, const hit_details& rec, glm::vec3& attenuation, Ray& scattered) override;
+    inline virtual glm::vec3 emitted(double u, double v, const glm::vec3& p) override { return glm::vec3(0,0,0);}
+
+public: 
+    std::shared_ptr<Texture> albedo;
+    double sharpness;  
+}; 
+
+//////////////////////////////////////////////////////////////
+/*
+Disney BRDF for broad variety of material choices
+
+# Copyright Disney Enterprises, Inc.  All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License
+# and the following modification to it: Section 6 Trademarks.
+# deleted and replaced with:
+#
+# 6. Trademarks. This License does not grant permission to use the
+# trade names, trademarks, service marks, or product names of the
+# Licensor and its affiliates, except as required for reproducing
+# the content of the NOTICE file.
+#
+# You may obtain a copy of the License at
+# http://www.apache.org/licenses/LICENSE-2.0
+
+# Will add soon 
+*////////////////////////////////////////////////////////////////

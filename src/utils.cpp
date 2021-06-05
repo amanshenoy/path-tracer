@@ -33,12 +33,11 @@ int show_tree_building(double progress, int progress_bar_width, int limit){
         else std::cout << " ";
     }
     std::cout.precision(4);
-    std::cout << GREEN << "▎" << RESET << "\r";
-    if (progress < limit - 1) std::cout.flush();
+    std::cout << GREEN << "▎" << RESET << static_cast<int>(progress) + 2 << "/" << limit << "\r";
+    if (progress < limit - 2) std::cout.flush();
     else std::cout << "\n";
     return 0; 
 }
-
 
 void hit_details::set_face(const Ray& ray, const glm::vec3& outward_normal) {
     front_face = glm::dot(ray.direction(), outward_normal) < 0;

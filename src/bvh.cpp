@@ -21,16 +21,11 @@ bool BVHNode::hit(const Ray& r, double t_min, double t_max, hit_details& rec){
     return hit_left || hit_right;
 }
 
-BVHNode::BVHNode(std::vector<std::shared_ptr<Object>>& src_objects, size_t start, size_t end, double time0, double time1, double node_id) {
-    auto objects = src_objects; // Create a modifiable array of the source scene objects
+BVHNode::BVHNode(std::vector<std::shared_ptr<Object>>& objects, size_t start, size_t end, double time0, double time1, double& node_id, bool first) {
+    int progress_bar_width = 60; 
 
-    // int axis = random_int(0,2);
-    int progress_bar_width = 70; 
-
-    // #pragma omp critical
-    show_tree_building(node_id, progress_bar_width, floor(log2(static_cast<int>(objects.size()))) * 2 + 1);
-    // std::cout << node_id<< std::endl; 
-    // node_id += 1; 
+    #pragma omp critical
+    show_tree_building(node_id, progress_bar_width, static_cast<int>(objects.size()));
     int axis = 0; 
     auto comparator = (axis == 0) ? box_x_compare : (axis == 1) ? box_y_compare
                                   : box_z_compare;
@@ -39,22 +34,32 @@ BVHNode::BVHNode(std::vector<std::shared_ptr<Object>>& src_objects, size_t start
 
     if (object_span == 1) {
         left = right = objects[start];
-    } else if (object_span == 2) {
-        if (comparator(objects[start], objects[start+1])) {
+        node_id += 1; 
+    } 
+    else if (object_span == 2) {
+        node_id += 2; 
+        if (comparator(objects[start], objects[start+1])){
             left = objects[start];
             right = objects[start+1];
-        } else {
+        } 
+        else {
             left = objects[start+1];
             right = objects[start];
         }
-    } else {
-        std::sort(objects.begin() + start, objects.begin() + end, comparator);
+    } 
+    else {
+        #pragma omp parallel
+        #pragma omp single
+        {
+            if (first) std::sort(objects.begin() + start, objects.begin() + end, comparator);
+            auto mid = start + object_span/2;
 
-        auto mid = start + object_span/2;
-        // #pragma omp critical
-        // #pragma omp parallel 
-        left = std::make_shared<BVHNode>(objects, start, mid, time0, time1, node_id + 1);
-        right = std::make_shared<BVHNode>(objects, mid, end, time0, time1, node_id + 2);
+            #pragma omp task
+            left = std::make_shared<BVHNode>(objects, start, mid, time0, time1, node_id, false);
+            
+            #pragma omp task
+            right = std::make_shared<BVHNode>(objects, mid, end, time0, time1, node_id, false);
+        }
     }
 
     AABB box_left, box_right;
@@ -66,23 +71,6 @@ BVHNode::BVHNode(std::vector<std::shared_ptr<Object>>& src_objects, size_t start
 
     box = surrounding_box(box_left, box_right);
 }
-
-BVHNode::BVHNode(const std::shared_ptr<Mesh>& mesh, double time0, double time1) 
-{ 
-    // mesh -> bounding_box(0, 1, temp_box);
-    // box = temp_box; 
-    // std::cout << box << std::endl; 
-    // temp_box = AABB(glm::vec3(mesh -> minX - 0.0001, mesh -> minY- 0.0001, mesh -> minZ- 0.0001), glm::vec3(mesh -> maxX + 0.0001, mesh -> maxY + 0.0001, mesh -> maxZ + 0.0001)); 
-    AABB temp_box; 
-    if (!mesh->bounding_box (time0, time1, temp_box))
-        std::cerr << "No bounding box in bvh_node constructor.\n";
-    // temp_box = AABB(glm::vec3(0), glm::vec3(0.1)); 
-    // box = temp_box; 
-    // temp_box = surrounding_box(temp_box, temp_box); 
-    left = right = mesh; 
-    box = temp_box; 
-}
-
 
 bool box_compare(const std::shared_ptr<Object>& a, const std::shared_ptr<Object>& b, int axis) {
     AABB box_a;
