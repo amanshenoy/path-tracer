@@ -35,6 +35,8 @@ Ray Surface intersection routine has been implemented for Spheres, Planes, Boxes
 - [x] Bounding Volume Heirarchies 
 - [x] Multithread pixel processing
 - [x] Add `.obj` object support   
+- [x] Importance Sampling 
+- [x] HDR Environment maps
 - [ ] ~~Find a way to serialize BVH tree object (for re-use for large meshes)~~ 
 - [x] Optimize and Multithread mesh BVH tree building 
 - [ ] Optimize ray-triangle intersection routine 

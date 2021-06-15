@@ -17,7 +17,7 @@ if (OPENMP_FOUND)
     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 endif()
 
-file (GLOB source_files "${source_dir}/*.cpp" "${source_dir}/dependancies/*.cpp" "${source_dir}/dependancies/*/*.cpp")
+file (GLOB source_files "${source_dir}/*.cpp" "${source_dir}/dependancies/*.cpp" "${source_dir}/dependancies/*/*.cpp" "${source_dir}/core/*.cpp" "${source_dir}/optim/*.cpp" "${source_dir}/utils/*.cpp" "${source_dir}/shaders/*.cpp")
 
 add_executable (path-tracer ${source_files})
 target_link_libraries(path-tracer freeimage)

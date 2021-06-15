@@ -14,15 +14,19 @@
 #include <memory>
 #include <random>
 
-#include "ray.hpp"
-#include "utils.hpp"
-#include "objects.hpp"
-#include "materials.hpp"
-#include "camera.hpp"
-#include "bvh.hpp"
-#include "background.hpp"
+#include "utils/utils.hpp"
+#include "utils/pdf.hpp"
+
+#include "core/ray.hpp"
+#include "core/objects.hpp"
+#include "core/materials.hpp"
+#include "core/camera.hpp"
+#include "core/background.hpp"
+
+#include "optim/bvh.hpp"
 
 #include "dependancies/colors.hpp"
+
 #include "scenes.hpp"
 
 extern int progress_bar_width; 
@@ -35,9 +39,9 @@ RGBQUAD write_maps(glm::vec3 map_color){
     g = map_color.g;
     b = map_color.b;
 
-    r = static_cast<int>(clamp(r, 0.0f, 0.999f) * 256.0f);  
-    g = static_cast<int>(clamp(g, 0.0f, 0.999f) * 256.0f); 
-    b =  static_cast<int>(clamp(b, 0.0f, 0.999f) * 256.0f);
+    r = static_cast<int>(utils::clamp(r, 0.0f, 0.999f) * 256.0f);  
+    g = static_cast<int>(utils::clamp(g, 0.0f, 0.999f) * 256.0f); 
+    b =  static_cast<int>(utils::clamp(b, 0.0f, 0.999f) * 256.0f);
 
     color.rgbRed = r;  
     color.rgbGreen = g; 
@@ -53,6 +57,10 @@ RGBQUAD write_color(glm::vec3 pixel_color, double samples_per_pixel){
     g = pixel_color.g;
     b = pixel_color.b;
 
+    if (r != r) r = 0.0;
+    if (g != g) g = 0.0;
+    if (b != b) b = 0.0;
+
     double scale = 1.0f / samples_per_pixel;
     double gamma = 1.75f; 
 
@@ -60,9 +68,9 @@ RGBQUAD write_color(glm::vec3 pixel_color, double samples_per_pixel){
     g = pow(scale * g, 1.0f / gamma);
     b = pow(scale * b, 1.0f / gamma);
     
-    r = static_cast<int>(clamp(r, 0.0f, 0.999f) * 256.0f);  
-    g = static_cast<int>(clamp(g, 0.0f, 0.999f) * 256.0f); 
-    b =  static_cast<int>(clamp(b, 0.0f, 0.999f) * 256.0f);
+    r = static_cast<int>(utils::clamp(r, 0.0f, 0.999f) * 256.0f);  
+    g = static_cast<int>(utils::clamp(g, 0.0f, 0.999f) * 256.0f); 
+    b =  static_cast<int>(utils::clamp(b, 0.0f, 0.999f) * 256.0f);
 
     color.rgbRed = r;  
     color.rgbGreen = g; 
@@ -78,29 +86,63 @@ void write_image(std::string image_path, FIBITMAP* image_object){
         std::cout << BOLDCYAN << "[ STATUS ]" << RESET << " Path " << image_path << " does not exist!" << std::endl; 
 }
 
-glm::vec3 shoot_ray(const Ray& ray, Background& bg, Object& world, int depth, bool first, glm::vec3& first_albedo, glm::vec3& first_normal){
-    hit_details rec;
+glm::vec3 shoot_ray(const core::Ray& ray, core::Background& bg, core::Object& world, core::Scene& lights, int depth, bool first, glm::vec3& first_albedo, glm::vec3& first_normal){
+    utils::hit_details rec;
     
     if (depth <= 0) return glm::vec3(0.0f);
     double infinity = std::numeric_limits<double>::infinity();
 
     if (!world.hit(ray, 0.005, infinity, rec)){
-        if (first) first_normal = glm::vec3(0); 
+        if (first) first_normal = glm::vec3(0);
+        if (first) first_albedo = glm::vec3(0); 
         return bg.get_color(ray); 
     }
 
-    Ray scattered; 
-    glm::vec3 attenuation; 
-    glm::vec3 emitted = rec.mat_ptr->emitted(rec.u, rec.v, rec.p);
+    utils::scatter_record srec;
+    glm::vec3 emitted = rec.mat_ptr->emitted(ray, rec, rec.u, rec.v, rec.p);
+    // auto light_ptr = std::make_shared<ObjectPDF>(std::make_shared<Scene>(lights), rec.p);
+    // srec.imp_sampler = light_ptr; 
+    // MixturePDF p(srec.imp_sampler, srec.pdf_ptr, 1);
 
-    if (!rec.mat_ptr -> bsdf(ray, rec, attenuation, scattered))
+    // srec.scattered = Ray(rec.p, light_ptr -> generate(), ray.time());
+    // srec.pdf_value = light_ptr -> value(srec.scattered.direction());
+
+    srec.scattered = core::Ray(rec.p, glm::vec3(0, 0, 1), ray.time());
+    srec.pdf_value = 1;
+
+
+    if (!rec.mat_ptr -> bsdf(ray, rec, srec))
         return emitted;
 
     if (first){
-        first_albedo = attenuation; 
-        first_normal = glm::normalize(rec.normal);
+        first_albedo = rec.mat_ptr -> get_albedo(); 
+        first_normal = (-glm::normalize(rec.normal) + glm::vec3(1)) / 2.0f;
     }
-    return emitted + attenuation * shoot_ray(scattered, bg, world, depth - 1, false, first_albedo, first_normal);
+
+   if (srec.is_specular) {
+        return srec.attenuation
+             * shoot_ray(srec.specular_ray, bg, world, lights, depth-1,false, first_albedo, first_normal);
+    }
+
+    // auto light_ptr = std::make_shared<ObjectPDF>(std::make_shared<Scene>(lights), rec.p);
+    // srec.imp_sampler = light_ptr; 
+    // MixturePDF p(srec.imp_sampler, srec.pdf_ptr, 1);
+
+    // srec.scattered = Ray(rec.p, light_ptr -> generate(), ray.time());
+    // srec.pdf_value = light_ptr -> value(srec.scattered.direction());
+    
+    core::Ray scattered = srec.scattered;
+    auto pdf_val = srec.pdf_value;
+
+
+    glm::vec3 albedo = srec.attenuation; 
+    // return emitted + 
+    //         albedo * static_cast<float>(rec.mat_ptr -> scattering_pdf(ray, rec, scattered)) 
+    //                * shoot_ray(scattered, bg, world, lights, depth - 1, false, first_albedo, first_normal) / static_cast<float>(pdf_val);
+    return emitted + 
+            albedo * static_cast<float>(pdf_val) 
+                   * shoot_ray(scattered, bg, world, lights, depth - 1, false, first_albedo, first_normal) / static_cast<float>(pdf_val);
+
 }
 
 int main(int argc, char* argv[]){
@@ -111,19 +153,23 @@ int main(int argc, char* argv[]){
     //////////////////////////////////////////////////////////////////////
 
     double aspect_ratio; 
-    int height = 400;
+    int height = 512;
     int width;  
-    int samples_per_pixel = 2; 
+    int samples_per_pixel = 15;  
     int max_depth = 10;
-
+ 
     glm::vec3 lookfrom = glm::vec3(278.0f, 278.0f, -800.0f);
     glm::vec3 lookat = glm::vec3(278.0f, 278.0f, 0.0f); 
     glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
     double fovy = 40.0; 
+    float aperture = 0.0f; 
+    float focal_distance = glm::length(lookfrom - lookat); 
 
     std::string scene = argv[1];
-    Scene world = GetScene(aspect_ratio, lookfrom, lookat, height, width, fovy, scene);
-    Camera cam(fovy, aspect_ratio, lookfrom, lookat, up, 0.0f, glm::length(lookfrom - lookat), 0.0f, 1.0f); 
+
+    core::Scene lights; 
+    core::Scene world = GetScene(aspect_ratio, lookfrom, lookat, height, width, fovy, scene, lights, aperture, focal_distance);
+    core::Camera cam(fovy, aspect_ratio, lookfrom, lookat, up, aperture, focal_distance, 0.0f, 1.0f); 
 
     FIBITMAP* image  = FreeImage_Allocate(width, height, 24); 
     FIBITMAP* albedo_map  = FreeImage_Allocate(width, height, 24); 
@@ -133,10 +179,11 @@ int main(int argc, char* argv[]){
     std::string albedo_path = std::string("output/albedo_maps/") + scene + std::string(".png");
     std::string normal_path = std::string("output/normal_maps/") + scene + std::string(".png");
 
-    GradientBG background(glm::vec3(0), glm::vec3(1), 0.8); 
-
+    // GradientBG background(glm::vec3(0), glm::vec3(0), 4); 
+    core::ImageBG background("res/backgrounds/chinese_garden.hdr");
     //////////////////////////////////////////////////////////////////////
 
+    srand(time(NULL));
     auto start = std::chrono::high_resolution_clock::now(); 
     double progress = 0.0f;
 
@@ -146,7 +193,7 @@ int main(int argc, char* argv[]){
             int progress_bar_width = 70; 
 
             #pragma omp critical
-            show_progress_bar(progress, progress_bar_width, width * height);
+            utils::show_progress_bar(progress, progress_bar_width, width * height);
             progress += 1; 
 
             glm::vec3 pixel_color(0);
@@ -155,10 +202,10 @@ int main(int argc, char* argv[]){
             //////////////////////////////////////////////////////////////////////
 
             for (int s = 0; s < samples_per_pixel; ++s){
-                double u = (static_cast<double>(j) + random_double()) / width; 
-                double v = (static_cast<double>(i) + random_double()) / height; 
-                Ray ray = cam.get_ray(u, v); 
-                glm::vec3 sample_color = shoot_ray(ray, background, world, max_depth, true, first_albedo, first_normal);
+                double u = (static_cast<double>(j) + utils::sampler::random_double()) / width; 
+                double v = (static_cast<double>(i) + utils::sampler::random_double()) / height; 
+                core::Ray ray = cam.get_ray(u, v); 
+                glm::vec3 sample_color = shoot_ray(ray, background, world, lights, max_depth, true, first_albedo, first_normal);
                 pixel_color +=  sample_color;
             }
 

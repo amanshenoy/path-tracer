@@ -123,113 +123,140 @@ path-tracer/fast:
 	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/build
 .PHONY : path-tracer/fast
 
-src/aabb.o: src/aabb.cpp.o
+src/core/background.o: src/core/background.cpp.o
 
-.PHONY : src/aabb.o
-
-# target to build an object file
-src/aabb.cpp.o:
-	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/aabb.cpp.o
-.PHONY : src/aabb.cpp.o
-
-src/aabb.i: src/aabb.cpp.i
-
-.PHONY : src/aabb.i
-
-# target to preprocess a source file
-src/aabb.cpp.i:
-	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/aabb.cpp.i
-.PHONY : src/aabb.cpp.i
-
-src/aabb.s: src/aabb.cpp.s
-
-.PHONY : src/aabb.s
-
-# target to generate assembly for a file
-src/aabb.cpp.s:
-	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/aabb.cpp.s
-.PHONY : src/aabb.cpp.s
-
-src/background.o: src/background.cpp.o
-
-.PHONY : src/background.o
+.PHONY : src/core/background.o
 
 # target to build an object file
-src/background.cpp.o:
-	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/background.cpp.o
-.PHONY : src/background.cpp.o
+src/core/background.cpp.o:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/core/background.cpp.o
+.PHONY : src/core/background.cpp.o
 
-src/background.i: src/background.cpp.i
+src/core/background.i: src/core/background.cpp.i
 
-.PHONY : src/background.i
+.PHONY : src/core/background.i
 
 # target to preprocess a source file
-src/background.cpp.i:
-	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/background.cpp.i
-.PHONY : src/background.cpp.i
+src/core/background.cpp.i:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/core/background.cpp.i
+.PHONY : src/core/background.cpp.i
 
-src/background.s: src/background.cpp.s
+src/core/background.s: src/core/background.cpp.s
 
-.PHONY : src/background.s
+.PHONY : src/core/background.s
 
 # target to generate assembly for a file
-src/background.cpp.s:
-	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/background.cpp.s
-.PHONY : src/background.cpp.s
+src/core/background.cpp.s:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/core/background.cpp.s
+.PHONY : src/core/background.cpp.s
 
-src/bvh.o: src/bvh.cpp.o
+src/core/camera.o: src/core/camera.cpp.o
 
-.PHONY : src/bvh.o
+.PHONY : src/core/camera.o
 
 # target to build an object file
-src/bvh.cpp.o:
-	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/bvh.cpp.o
-.PHONY : src/bvh.cpp.o
+src/core/camera.cpp.o:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/core/camera.cpp.o
+.PHONY : src/core/camera.cpp.o
 
-src/bvh.i: src/bvh.cpp.i
+src/core/camera.i: src/core/camera.cpp.i
 
-.PHONY : src/bvh.i
+.PHONY : src/core/camera.i
 
 # target to preprocess a source file
-src/bvh.cpp.i:
-	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/bvh.cpp.i
-.PHONY : src/bvh.cpp.i
+src/core/camera.cpp.i:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/core/camera.cpp.i
+.PHONY : src/core/camera.cpp.i
 
-src/bvh.s: src/bvh.cpp.s
+src/core/camera.s: src/core/camera.cpp.s
 
-.PHONY : src/bvh.s
+.PHONY : src/core/camera.s
 
 # target to generate assembly for a file
-src/bvh.cpp.s:
-	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/bvh.cpp.s
-.PHONY : src/bvh.cpp.s
+src/core/camera.cpp.s:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/core/camera.cpp.s
+.PHONY : src/core/camera.cpp.s
 
-src/camera.o: src/camera.cpp.o
+src/core/materials.o: src/core/materials.cpp.o
 
-.PHONY : src/camera.o
+.PHONY : src/core/materials.o
 
 # target to build an object file
-src/camera.cpp.o:
-	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/camera.cpp.o
-.PHONY : src/camera.cpp.o
+src/core/materials.cpp.o:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/core/materials.cpp.o
+.PHONY : src/core/materials.cpp.o
 
-src/camera.i: src/camera.cpp.i
+src/core/materials.i: src/core/materials.cpp.i
 
-.PHONY : src/camera.i
+.PHONY : src/core/materials.i
 
 # target to preprocess a source file
-src/camera.cpp.i:
-	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/camera.cpp.i
-.PHONY : src/camera.cpp.i
+src/core/materials.cpp.i:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/core/materials.cpp.i
+.PHONY : src/core/materials.cpp.i
 
-src/camera.s: src/camera.cpp.s
+src/core/materials.s: src/core/materials.cpp.s
 
-.PHONY : src/camera.s
+.PHONY : src/core/materials.s
 
 # target to generate assembly for a file
-src/camera.cpp.s:
-	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/camera.cpp.s
-.PHONY : src/camera.cpp.s
+src/core/materials.cpp.s:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/core/materials.cpp.s
+.PHONY : src/core/materials.cpp.s
+
+src/core/objects.o: src/core/objects.cpp.o
+
+.PHONY : src/core/objects.o
+
+# target to build an object file
+src/core/objects.cpp.o:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/core/objects.cpp.o
+.PHONY : src/core/objects.cpp.o
+
+src/core/objects.i: src/core/objects.cpp.i
+
+.PHONY : src/core/objects.i
+
+# target to preprocess a source file
+src/core/objects.cpp.i:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/core/objects.cpp.i
+.PHONY : src/core/objects.cpp.i
+
+src/core/objects.s: src/core/objects.cpp.s
+
+.PHONY : src/core/objects.s
+
+# target to generate assembly for a file
+src/core/objects.cpp.s:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/core/objects.cpp.s
+.PHONY : src/core/objects.cpp.s
+
+src/core/ray.o: src/core/ray.cpp.o
+
+.PHONY : src/core/ray.o
+
+# target to build an object file
+src/core/ray.cpp.o:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/core/ray.cpp.o
+.PHONY : src/core/ray.cpp.o
+
+src/core/ray.i: src/core/ray.cpp.i
+
+.PHONY : src/core/ray.i
+
+# target to preprocess a source file
+src/core/ray.cpp.i:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/core/ray.cpp.i
+.PHONY : src/core/ray.cpp.i
+
+src/core/ray.s: src/core/ray.cpp.s
+
+.PHONY : src/core/ray.s
+
+# target to generate assembly for a file
+src/core/ray.cpp.s:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/core/ray.cpp.s
+.PHONY : src/core/ray.cpp.s
 
 src/dependancies/stb_image.o: src/dependancies/stb_image.cpp.o
 
@@ -285,113 +312,140 @@ src/main.cpp.s:
 	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
-src/materials.o: src/materials.cpp.o
+src/optim/aabb.o: src/optim/aabb.cpp.o
 
-.PHONY : src/materials.o
-
-# target to build an object file
-src/materials.cpp.o:
-	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/materials.cpp.o
-.PHONY : src/materials.cpp.o
-
-src/materials.i: src/materials.cpp.i
-
-.PHONY : src/materials.i
-
-# target to preprocess a source file
-src/materials.cpp.i:
-	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/materials.cpp.i
-.PHONY : src/materials.cpp.i
-
-src/materials.s: src/materials.cpp.s
-
-.PHONY : src/materials.s
-
-# target to generate assembly for a file
-src/materials.cpp.s:
-	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/materials.cpp.s
-.PHONY : src/materials.cpp.s
-
-src/objects.o: src/objects.cpp.o
-
-.PHONY : src/objects.o
+.PHONY : src/optim/aabb.o
 
 # target to build an object file
-src/objects.cpp.o:
-	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/objects.cpp.o
-.PHONY : src/objects.cpp.o
+src/optim/aabb.cpp.o:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/optim/aabb.cpp.o
+.PHONY : src/optim/aabb.cpp.o
 
-src/objects.i: src/objects.cpp.i
+src/optim/aabb.i: src/optim/aabb.cpp.i
 
-.PHONY : src/objects.i
+.PHONY : src/optim/aabb.i
 
 # target to preprocess a source file
-src/objects.cpp.i:
-	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/objects.cpp.i
-.PHONY : src/objects.cpp.i
+src/optim/aabb.cpp.i:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/optim/aabb.cpp.i
+.PHONY : src/optim/aabb.cpp.i
 
-src/objects.s: src/objects.cpp.s
+src/optim/aabb.s: src/optim/aabb.cpp.s
 
-.PHONY : src/objects.s
+.PHONY : src/optim/aabb.s
 
 # target to generate assembly for a file
-src/objects.cpp.s:
-	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/objects.cpp.s
-.PHONY : src/objects.cpp.s
+src/optim/aabb.cpp.s:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/optim/aabb.cpp.s
+.PHONY : src/optim/aabb.cpp.s
 
-src/ray.o: src/ray.cpp.o
+src/optim/bvh.o: src/optim/bvh.cpp.o
 
-.PHONY : src/ray.o
+.PHONY : src/optim/bvh.o
 
 # target to build an object file
-src/ray.cpp.o:
-	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/ray.cpp.o
-.PHONY : src/ray.cpp.o
+src/optim/bvh.cpp.o:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/optim/bvh.cpp.o
+.PHONY : src/optim/bvh.cpp.o
 
-src/ray.i: src/ray.cpp.i
+src/optim/bvh.i: src/optim/bvh.cpp.i
 
-.PHONY : src/ray.i
+.PHONY : src/optim/bvh.i
 
 # target to preprocess a source file
-src/ray.cpp.i:
-	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/ray.cpp.i
-.PHONY : src/ray.cpp.i
+src/optim/bvh.cpp.i:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/optim/bvh.cpp.i
+.PHONY : src/optim/bvh.cpp.i
 
-src/ray.s: src/ray.cpp.s
+src/optim/bvh.s: src/optim/bvh.cpp.s
 
-.PHONY : src/ray.s
+.PHONY : src/optim/bvh.s
 
 # target to generate assembly for a file
-src/ray.cpp.s:
-	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/ray.cpp.s
-.PHONY : src/ray.cpp.s
+src/optim/bvh.cpp.s:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/optim/bvh.cpp.s
+.PHONY : src/optim/bvh.cpp.s
 
-src/utils.o: src/utils.cpp.o
+src/shaders/bsdf.o: src/shaders/bsdf.cpp.o
 
-.PHONY : src/utils.o
+.PHONY : src/shaders/bsdf.o
 
 # target to build an object file
-src/utils.cpp.o:
-	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/utils.cpp.o
-.PHONY : src/utils.cpp.o
+src/shaders/bsdf.cpp.o:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/shaders/bsdf.cpp.o
+.PHONY : src/shaders/bsdf.cpp.o
 
-src/utils.i: src/utils.cpp.i
+src/shaders/bsdf.i: src/shaders/bsdf.cpp.i
 
-.PHONY : src/utils.i
+.PHONY : src/shaders/bsdf.i
 
 # target to preprocess a source file
-src/utils.cpp.i:
-	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/utils.cpp.i
-.PHONY : src/utils.cpp.i
+src/shaders/bsdf.cpp.i:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/shaders/bsdf.cpp.i
+.PHONY : src/shaders/bsdf.cpp.i
 
-src/utils.s: src/utils.cpp.s
+src/shaders/bsdf.s: src/shaders/bsdf.cpp.s
 
-.PHONY : src/utils.s
+.PHONY : src/shaders/bsdf.s
 
 # target to generate assembly for a file
-src/utils.cpp.s:
-	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/utils.cpp.s
-.PHONY : src/utils.cpp.s
+src/shaders/bsdf.cpp.s:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/shaders/bsdf.cpp.s
+.PHONY : src/shaders/bsdf.cpp.s
+
+src/utils/pdf.o: src/utils/pdf.cpp.o
+
+.PHONY : src/utils/pdf.o
+
+# target to build an object file
+src/utils/pdf.cpp.o:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/utils/pdf.cpp.o
+.PHONY : src/utils/pdf.cpp.o
+
+src/utils/pdf.i: src/utils/pdf.cpp.i
+
+.PHONY : src/utils/pdf.i
+
+# target to preprocess a source file
+src/utils/pdf.cpp.i:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/utils/pdf.cpp.i
+.PHONY : src/utils/pdf.cpp.i
+
+src/utils/pdf.s: src/utils/pdf.cpp.s
+
+.PHONY : src/utils/pdf.s
+
+# target to generate assembly for a file
+src/utils/pdf.cpp.s:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/utils/pdf.cpp.s
+.PHONY : src/utils/pdf.cpp.s
+
+src/utils/utils.o: src/utils/utils.cpp.o
+
+.PHONY : src/utils/utils.o
+
+# target to build an object file
+src/utils/utils.cpp.o:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/utils/utils.cpp.o
+.PHONY : src/utils/utils.cpp.o
+
+src/utils/utils.i: src/utils/utils.cpp.i
+
+.PHONY : src/utils/utils.i
+
+# target to preprocess a source file
+src/utils/utils.cpp.i:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/utils/utils.cpp.i
+.PHONY : src/utils/utils.cpp.i
+
+src/utils/utils.s: src/utils/utils.cpp.s
+
+.PHONY : src/utils/utils.s
+
+# target to generate assembly for a file
+src/utils/utils.cpp.s:
+	$(MAKE) -f CMakeFiles/path-tracer.dir/build.make CMakeFiles/path-tracer.dir/src/utils/utils.cpp.s
+.PHONY : src/utils/utils.cpp.s
 
 # Help Target
 help:
@@ -402,36 +456,42 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... path-tracer"
-	@echo "... src/aabb.o"
-	@echo "... src/aabb.i"
-	@echo "... src/aabb.s"
-	@echo "... src/background.o"
-	@echo "... src/background.i"
-	@echo "... src/background.s"
-	@echo "... src/bvh.o"
-	@echo "... src/bvh.i"
-	@echo "... src/bvh.s"
-	@echo "... src/camera.o"
-	@echo "... src/camera.i"
-	@echo "... src/camera.s"
+	@echo "... src/core/background.o"
+	@echo "... src/core/background.i"
+	@echo "... src/core/background.s"
+	@echo "... src/core/camera.o"
+	@echo "... src/core/camera.i"
+	@echo "... src/core/camera.s"
+	@echo "... src/core/materials.o"
+	@echo "... src/core/materials.i"
+	@echo "... src/core/materials.s"
+	@echo "... src/core/objects.o"
+	@echo "... src/core/objects.i"
+	@echo "... src/core/objects.s"
+	@echo "... src/core/ray.o"
+	@echo "... src/core/ray.i"
+	@echo "... src/core/ray.s"
 	@echo "... src/dependancies/stb_image.o"
 	@echo "... src/dependancies/stb_image.i"
 	@echo "... src/dependancies/stb_image.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
-	@echo "... src/materials.o"
-	@echo "... src/materials.i"
-	@echo "... src/materials.s"
-	@echo "... src/objects.o"
-	@echo "... src/objects.i"
-	@echo "... src/objects.s"
-	@echo "... src/ray.o"
-	@echo "... src/ray.i"
-	@echo "... src/ray.s"
-	@echo "... src/utils.o"
-	@echo "... src/utils.i"
-	@echo "... src/utils.s"
+	@echo "... src/optim/aabb.o"
+	@echo "... src/optim/aabb.i"
+	@echo "... src/optim/aabb.s"
+	@echo "... src/optim/bvh.o"
+	@echo "... src/optim/bvh.i"
+	@echo "... src/optim/bvh.s"
+	@echo "... src/shaders/bsdf.o"
+	@echo "... src/shaders/bsdf.i"
+	@echo "... src/shaders/bsdf.s"
+	@echo "... src/utils/pdf.o"
+	@echo "... src/utils/pdf.i"
+	@echo "... src/utils/pdf.s"
+	@echo "... src/utils/utils.o"
+	@echo "... src/utils/utils.i"
+	@echo "... src/utils/utils.s"
 .PHONY : help
 
 
