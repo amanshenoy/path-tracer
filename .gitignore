@@ -4,3 +4,4 @@ cmake_install.cmake
 src/dependacies/
 .vscode/
 clutter.txt
+*.hdr
