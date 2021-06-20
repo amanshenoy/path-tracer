@@ -27,8 +27,8 @@ namespace core {
 
     class ImageBG : public Background{
     public:
-        ImageBG(const char* filename); 
-        ImageBG() : data(nullptr), width(0), height(0), bytes_per_scanline(0) {}
+        ImageBG(const char* filename, float gamma, float offset); 
+        ImageBG() : data(nullptr), width(0), height(0), bytes_per_scanline(0), gamma(1) {}
 
         virtual glm::vec3 get_color(const Ray& ray_in) override;     
 
@@ -39,6 +39,7 @@ namespace core {
     public:
         glm::vec3 high, low;
         float gradient;  
+        float gamma, offset; 
 
         unsigned char *data; 
         int width, height; 

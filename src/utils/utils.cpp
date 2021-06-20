@@ -45,7 +45,7 @@ namespace utils {
         normal = front_face ? outward_normal : -outward_normal;
     }
 
-    void ONB::build_from_w(const glm::vec3& normal, glm::vec3 tangent) {
+    void LocalBasis::build_from_w(const glm::vec3& normal, glm::vec3 tangent) {
         while (tangent == normal){
             tangent = glm::normalize(tangent + utils::sampler::random_in_hemisphere(tangent));  
         }
@@ -54,7 +54,7 @@ namespace utils {
         axis[0] = glm::normalize(glm::cross(w(), v()));
         transform = glm::mat3(axis[1], axis[2], axis[0]);
     }
-    void ONB::build_from_w(const glm::vec3& n) {
+    void LocalBasis::build_from_w(const glm::vec3& n) {
         axis[2] = glm::normalize(n);
         glm::vec3 a; 
         a = glm::vec3(0, 1, 0); 
@@ -76,7 +76,6 @@ namespace utils {
 
     namespace sampler {
         double random_double() {
-            // srand(500); 
             return rand() / (RAND_MAX + 1.0);
         }
 

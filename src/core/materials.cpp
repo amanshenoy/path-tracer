@@ -3,6 +3,7 @@
 #include "../dependancies/colors.hpp"
 #include "materials.hpp"
 #include "../utils/pdf.hpp"
+#include "../shaders/bsdf.hpp"
 
 namespace core {
     glm::vec3 reflect_ray(const glm::vec3& v, const glm::vec3& n){
@@ -17,11 +18,7 @@ namespace core {
     }
 
 
-    bool Metal::bsdf(const Ray& ray_in, const utils::hit_details& rec, utils::scatter_record& srec) {
-        // glm::vec3 reflected = reflect_ray(glm::normalize(ray_in.direction()), rec.normal);
-        // scattered = Ray(rec.p, reflected + static_cast<float>(fuzz) * random_in_unit_sphere(), ray_in.time());
-        // attenuation = albedo;
-        // return (glm::dot(scattered.direction(), rec.normal) > 0); 
+    bool Metal::bsdf(const Ray& ray_in, const utils::hit_details& rec, utils::scatter_details& srec) {
         glm::vec3 reflected = reflect(glm::normalize(ray_in.direction()), rec.normal);
         srec.specular_ray = Ray(rec.p, reflected+static_cast<float>(fuzz)* utils::sampler::random_in_unit_sphere(), ray_in.time());
         srec.attenuation = alb;
@@ -30,30 +27,10 @@ namespace core {
         return true;    
     }
 
-    bool Dielectric::bsdf(const Ray& ray_in, const utils::hit_details& rec, utils::scatter_record& srec) {
-        // attenuation = glm::vec3(1.0);
-        // float refraction_ratio = rec.front_face ? (1.0 / ir) : ir;
-
-        // glm::vec3 unit_direction = glm::normalize(ray_in.direction());
-
-        // double cos_theta = fmin(glm::dot(-unit_direction, rec.normal), 1.0);
-        // double sin_theta = sqrt(1.0 - cos_theta*cos_theta);
-        // bool cannot_refract = refraction_ratio * sin_theta > 1.0;
-        // glm::vec3 direction; 
-
-        // if ((cannot_refract) || reflectance(cos_theta, refraction_ratio) > random_double())
-        //     direction = reflect_ray(unit_direction, rec.normal);
-        // else
-        //     direction = refract_ray(unit_direction, rec.normal, refraction_ratio);
-
-        // scattered = Ray(rec.p, direction + static_cast<float>(fuzz) * random_in_unit_sphere(), ray_in.time());
-        // return true;       
-
+    bool Dielectric::bsdf(const Ray& ray_in, const utils::hit_details& rec, utils::scatter_details& srec) {
         srec.is_specular = true;
         srec.pdf_ptr = nullptr;
         srec.attenuation = glm::vec3(1.0, 1.0, 1.0);
-        // double refraction_ratio = rec.front_face ? (1.0/ir) : ir;
-        // ...
         float refraction_ratio = rec.front_face ? (1.0 / ir) : ir;
 
         glm::vec3 unit_direction = glm::normalize(ray_in.direction());
@@ -79,47 +56,25 @@ namespace core {
         return r0 + (1 - r0) * pow(1 - cosine, 5);
     }
 
-    bool Lambertian::bsdf(const Ray& ray_in, const utils::hit_details& rec, utils::scatter_record& srec) {
-        // glm::vec3 direction = rec.normal + random_unit_vector();
-        
-        // if (near_zero(direction))
-        //     direction = rec.normal;
-        // ONB uvw;
-        // uvw.build_from_w(rec.normal); 
-        // auto direction = uvw.local(random_cosine_direction()); 
-        // scattered = Ray(rec.p, glm::normalize(direction), ray_in.time());
-        // attenuation = albedo -> value(rec.u, rec.v, rec.p);
-        // // pdf = glm::dot(rec.normal, scattered.direction()) / M_PI; 
-        // // pdf = 0.5 / M_PI; 
-        // pdf = glm::dot(uvw.w(), scattered.direction()) / M_PI; 
+    bool Lambertian::bsdf(const Ray& ray_in, const utils::hit_details& rec, utils::scatter_details& srec) {
         srec.is_specular = false; 
         srec.attenuation = albedo -> value(rec.u, rec.v, rec.p);
-        // auto cosine_pdf = CosinePDF(rec.normal);
         auto p =  std::make_shared<utils::CosinePDF>(rec.normal); 
         srec.scattered = Ray(rec.p, p->generate(), ray_in.time());
         srec.pdf_value = p->value(srec.scattered.direction());
         return true; 
     }
 
-    double Lambertian::scattering_pdf(const Ray& ray_in, const utils::hit_details& rec, const Ray& scattered) 
-    {
+    double Lambertian::scattering_pdf(const Ray& ray_in, const utils::hit_details& rec, const Ray& scattered) {
         auto cosine = glm::dot(rec.normal, glm::normalize(scattered.direction()));
         return cosine < 0 ? 0 : cosine / M_PI; 
     }
 
-    // bool Glossy::bsdf(const Ray& ray_in, const hit_details& rec, glm::vec3& attenuation, Ray& scattered) {
-    //     glm::vec3 reflected = reflect_ray(glm::normalize(ray_in.direction()), rec.normal);
-    //     glm::vec3 scatter_dirn = reflected + static_cast<float>(sharpness) * random_in_hemisphere(reflected);
-    //     scattered = Ray(rec.p, scatter_dirn, ray_in.time());
-    //     attenuation = albedo -> value(rec.u, rec.v, rec.p);
-    //     return true; 
-    // }
-
-    // bool Isotropic::bsdf(const Ray& ray_in, const hit_details& rec, glm::vec3& attenuation, Ray& scattered) {
-    //     scattered = Ray(rec.p, random_in_unit_sphere(), ray_in.time());
-    //     attenuation = albedo->value(rec.u, rec.v, rec.p);
-    //     return true;
-    // }
+    bool Isotropic::bsdf(const Ray& ray_in, const utils::hit_details& rec, utils::scatter_details& srec) {
+        srec.scattered = Ray(rec.p, utils::sampler::random_in_unit_sphere(), ray_in.time());
+        srec.attenuation = albedo->value(rec.u, rec.v, rec.p);
+        return true;
+    }
 
     glm::vec3 CheckeredTexture::value(double u, double v, const glm::vec3& p) {
         auto sines = sin(10 * p.x) * sin(10 * p.y) * sin(10 * p.z);
@@ -155,79 +110,116 @@ namespace core {
         return glm::vec3(color_scale * pixel[0], color_scale * pixel[1], color_scale * pixel[2]);
     }
 
-    #include "../shaders/bsdf.hpp"
+    Disney::Disney(const glm::vec3& a, float specular, float diffuse, float clearcoat, float transmission, bool thin){
+        this -> alb = a; 
+        this -> specular = specular; 
+        this -> diffuse = diffuse; 
+        this -> clearcoat = clearcoat; 
+        this -> transmission = transmission; 
+        this -> thin = thin;
 
+        surface_params.baseColor = alb; 
+        surface_params.transmittanceColor = glm::vec3(0.5);
+        surface_params.sheen = 0.5;
+        surface_params.sheenTint= 0.5;
+        surface_params.diffTrans= 0;
+        surface_params.flatness= 0.5;
+        surface_params.roughness= 0.5;
+        surface_params.scatterDistance= 0.5;
 
+        surface_params.clearcoat= 0.5;
+        surface_params.clearcoatGloss=0.5;
 
-    bool Disney::bsdf(const Ray& ray_in, const utils::hit_details& rec, utils::scatter_record& srec) {
-        srec.is_specular = false; 
-        // srec.attenuation = albedo -> value(rec.u, rec.v, rec.p);
-        
-        // srec.pdf_ptr =  std::make_shared<CosinePDF>(rec.normal); 
+        surface_params.anisotropic= 0.5;
+        surface_params.specularTint= 0.5;
+        surface_params.metallic = 0;
+        surface_params.specTrans= 0.5;
 
-        auto p = std::make_shared<utils::CosinePDF>(rec.normal);
-        // auto cosine_pdf = std::make_shared<CosinePDF>(rec.normal);
-        // auto light_ptr = std::make_shared<ObjectPDF>(std::make_shared<Scene>(srec.lights), rec.p);
-        
-        // MixturePDF p(light_ptr, cosine_pdf, 0.5);
-        
-        // auto light_sampler = srec.imp_sampler -> generate(); 
-        // srec.pdf_value = p->value(srec.scattered.direction());
-        // std::cout << "here" << std::endl;
-
-        bsdf::SurfaceParameters my_surface;
-        bsdf::BsdfSample sample;
-        my_surface.position = rec.p; 
-        my_surface.basis.build_from_w(rec.normal, rec.p); 
-        my_surface.worldToTangent = my_surface.basis.transform;
-        auto spring_green = glm::vec3(0, 255.0f/255.0f, 127.0f/255.0f); 
-        my_surface.baseColor = alb;
-        my_surface.transmittanceColor = glm::vec3(1);
-        my_surface.sheen = 0.2;
-        my_surface.sheenTint= 0.5;
-        // my_surface.diffTrans= 0.2;
-        my_surface.flatness= 0;
-        my_surface.roughness= 0;
-        my_surface.scatterDistance= 1;
-
-        my_surface.clearcoat= 0.5;
-        my_surface.clearcoatGloss=0.5;
-
-        // my_surface.anisotropic= 0.5;
-        // my_surface.specularTint= 0.5;
-        // my_surface.metallic= 0.5;
-        // my_surface.specTrans= 0.5;
-
-        // my_surface.ior= 0.5;
-
-        // bool sample_clearcoat = SampleDisneyClearcoat(my_surface, ray_in.direction(), sample); 
-        // if (sample_clearcoat){
-        //     srec.scattered = Ray(rec.p, sample.wi, ray_in.time()); 
-        //     srec.pdf_value = sample.forwardPdfW; 
-        //     srec.attenuation = sample.reflectance; 
-        // }
-        bool sample_diffuse = SampleDisneyDiffuse(my_surface, ray_in.direction(), true, sample); 
-        if (sample_diffuse){
-            srec.attenuation = sample.reflectance; 
-            srec.scattered = Ray(rec.p, sample.wi, ray_in.time()); 
-            srec.pdf_value = sample.forwardPdfW; 
-        }
-        // bool sample_transmit = SampleDisneySpecTransmission(my_surface, ray_in.direction(), true, sample); 
-        // if (sample_transmit){
-        //     srec.attenuation = sample.reflectance; 
-        //     srec.scattered = Ray(rec.p, sample.wi, ray_in.time()); 
-        //     srec.pdf_value = sample.forwardPdfW; 
-        // }
-
-
-        //     std::cout << "Something is off" << std::endl ;
-        // else std::cout << "Haha all well" << std::endl; 
-        return true; 
+        surface_params.ior= 1.5;
+        surface_params.relativeIOR = 1.5; 
     }
 
-    double Disney::scattering_pdf(const Ray& ray_in, const utils::hit_details& rec, const Ray& scattered) {
-        // auto cosine = glm::dot(rec.normal, glm::normalize(scattered.direction()));
-        // return cosine < 0 ? 0 : cosine / M_PI; 
-        return 0;
+    bsdf::SurfaceParameters Disney::get_surface_point(const utils::hit_details& rec){
+        bsdf::SurfaceParameters surface;
+        surface.position = rec.p; 
+        surface.basis.build_from_w(rec.normal, rec.p); 
+        surface.worldToTangent = surface.basis.transform;
+
+        surface.baseColor = surface_params.baseColor; 
+        surface.transmittanceColor = surface_params.transmittanceColor;
+        surface.sheen = surface_params.sheen;
+        surface.sheenTint = surface_params.sheenTint;
+        surface.diffTrans = surface_params.diffTrans;
+        surface.flatness = surface_params.flatness;
+        surface.roughness = surface_params.roughness;
+        surface.scatterDistance = surface_params.scatterDistance;
+
+        surface.clearcoat = surface_params.clearcoat;
+        surface.clearcoatGloss =surface_params.clearcoatGloss;
+
+        surface.anisotropic = surface_params.anisotropic;
+        surface.specularTint = surface_params.specularTint;
+        surface.metallic = surface_params.metallic;
+        surface.specTrans = surface_params.specTrans;
+
+        surface.ior = surface_params.ior;
+        surface.relativeIOR = surface_params.relativeIOR;
+
+        return surface;
+    }
+
+    bool Disney::bsdf(const core::Ray& ray_in, const utils::hit_details& rec, utils::scatter_details& srec) {
+        // The disney bsdf material has been poorly implemented and the clearcoat and transmission lobes are    
+                    // definitely faulty. 
+        // I would imagine this material to be a little bit off from what you would actually expect the 
+                    // disney bsdf to be 
+        // In case anyone happens to be reading this, DO NOT take help from this class implementation 
+        // Would recommend the implementation and corresponding blog by https://github.com/schuttejoe/Selas
+                    // or the implementation by https://github.com/mmacklin/tinsel. 
+
+        srec.is_specular = false; 
+
+        auto surface = get_surface_point(rec);
+        bsdf::BsdfSample sample;
+
+        bool adds_up = fabs(1.0 - specular - diffuse - clearcoat - transmission) < 0.05 ; 
+        assert (adds_up); 
+
+        auto choose_ray = utils::sampler::random_double();
+        
+        if (choose_ray < specular){ 
+            srec.is_specular = true; 
+            srec.attenuation = bsdf::CalculateTint(alb); 
+            srec.specular_ray = core::Ray(rec.p, reflect_ray(ray_in.direction(), rec.normal), ray_in.time()); 
+            srec.pdf_value = 1 - surface.metallic; 
+        }
+
+        else if (specular <= choose_ray && choose_ray < diffuse + specular){
+            bool sample_diffuse = bsdf::SampleDisneyDiffuse(surface, ray_in.direction(), this -> thin, sample); 
+            if (sample_diffuse){
+                srec.attenuation = sample.reflectance; 
+                srec.scattered = core::Ray(rec.p, sample.wi, ray_in.time()); 
+                srec.pdf_value = sample.forwardPdfW; 
+            }
+        }
+
+        else if (specular + diffuse <= choose_ray && choose_ray < specular + diffuse + clearcoat){
+            bool sample_clearcoat = SampleDisneyClearcoat(surface, ray_in.direction(), sample); 
+            if (sample_clearcoat){
+                srec.scattered = Ray(rec.p, sample.wi, ray_in.time()); 
+                srec.pdf_value = sample.forwardPdfW; 
+                srec.attenuation = sample.reflectance; 
+            }
+        }
+
+        else if (specular + diffuse + clearcoat <= choose_ray && choose_ray < diffuse + specular + clearcoat + transmission){            
+            bool sample_transmit = SampleDisneySpecTransmission(surface, ray_in.direction(), this -> thin, sample); 
+            if (sample_transmit){
+                srec.attenuation = sample.reflectance; 
+                srec.scattered = Ray(rec.p, sample.wi, ray_in.time()); 
+                srec.pdf_value = sample.forwardPdfW; 
+            }
+        }
+        return true; 
     }
 }

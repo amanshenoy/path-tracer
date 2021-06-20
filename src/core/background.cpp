@@ -12,7 +12,9 @@ namespace core {
         return (1 - t) * low + t * high;
     }
 
-    ImageBG::ImageBG(const char* filename) {
+    ImageBG::ImageBG(const char* filename, float gamma, float offset) {
+        this -> gamma = gamma; 
+        this -> offset = offset; 
         int components_per_pixel = bytes_per_pixel;
         data = stbi_load(filename, &width, &height, &components_per_pixel, components_per_pixel);
         if (!data){
@@ -39,12 +41,22 @@ namespace core {
         int i = static_cast<int>(u * width); 
         int j = static_cast<int>(v * height);
 
+        i = (i + static_cast<int>(offset * width)) % width; 
+
         if (i >= width) i = width - 1; 
         if (j >= width) j = height - 1; 
 
         const double color_scale = 1.0f / 255.0f;
         auto pixel = data + j * bytes_per_scanline + i * bytes_per_pixel;
 
-        return glm::vec3(color_scale * pixel[0], color_scale * pixel[1], color_scale * pixel[2]);
+        float r = color_scale * pixel[0];
+        float g = color_scale * pixel[1];
+        float b = color_scale * pixel[2];
+
+        r = pow(r, 1.0f / gamma);
+        g = pow(g, 1.0f / gamma);
+        b = pow(b, 1.0f / gamma);
+
+        return glm::vec3(r, g, b);
     }
 }

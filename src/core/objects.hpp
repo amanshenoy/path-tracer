@@ -138,7 +138,7 @@ namespace core {
 
     class Translate : public Object{
     public:
-        Translate(std::shared_ptr<core::Object>& obj, const glm::vec3& displacement)
+        Translate(std::shared_ptr<core::Object> obj, const glm::vec3 displacement)
             : ptr(obj), translation(displacement) {}
         
         virtual bool hit(const Ray& ray, double t_min, double t_max, utils::hit_details& rec) override;
@@ -164,21 +164,21 @@ namespace core {
             optim::AABB bbox;
     };
 
-    // class ConstantMedium : public Object{
-    // public:
-    //     ConstantMedium(std::shared_ptr<Object> b, double d, std::shared_ptr<Texture> a)
-    //         : boundary(b), neg_inv_dens(-1/d), phase_fn(std::make_shared<Isotropic>(a)) {}
-    //     ConstantMedium(std::shared_ptr<Object> b, double d, glm::vec3 c)
-    //         : boundary(b), neg_inv_dens(-1/d), phase_fn(std::make_shared<Isotropic>(c)) {}
+    class ConstantMedium : public Object{
+    public:
+        ConstantMedium(std::shared_ptr<Object> b, double d, std::shared_ptr<Texture> a)
+            : boundary(b), neg_inv_dens(-1/d), phase_fn(std::make_shared<Isotropic>(a)) {}
+        ConstantMedium(std::shared_ptr<Object> b, double d, glm::vec3 c)
+            : boundary(b), neg_inv_dens(-1/d), phase_fn(std::make_shared<Isotropic>(c)) {}
 
-    //     virtual bool hit(const Ray& ray, double t_min, double t_max, hit_details& rec) override;
-    //     virtual bool bounding_box(double time0, double time1, AABB& output_box) override;
+        virtual bool hit(const Ray& ray, double t_min, double t_max, utils::hit_details& rec) override;
+        virtual bool bounding_box(double time0, double time1, optim::AABB& output_box) override;
 
-    // public:
-    //     std::shared_ptr<Object> boundary; 
-    //     std::shared_ptr<Material> phase_fn;
-    //     double neg_inv_dens; 
-    // };
+    public:
+        std::shared_ptr<Object> boundary; 
+        std::shared_ptr<Material> phase_fn;
+        double neg_inv_dens; 
+    };
 
     class Triangle: public Object{
     public:

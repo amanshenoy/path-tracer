@@ -27,12 +27,13 @@ auto fade_glass = std::make_shared<core::Dielectric>(1.8, 0);
 auto aluminum = std::make_shared<core::Metal>(glm::vec3(0.8, 0.85, 0.88), 0.7);
 
 
-auto disney = std::make_shared<core::Disney>(glm::vec3(0, 255.0f/255.0f, 127.0f/255.0f));
+auto disney = std::make_shared<core::Disney>(glm::vec3(0, 255.0f/255.0f, 127.0f/255.0f), 0, 0.4, 0.2, 0.4, false);
 
-lookfrom = glm::vec3(0, 0, -4);
+lookfrom = glm::vec3(0, 0, -6);
 lookat = glm::vec3(0); 
 
-aperture = 1.0f / 5.6f; 
+aperture = 1.0f / 22.0f;
+// aperture = 0.0f; 
 focal_distance = glm::length(lookfrom - lookat); 
 
 // auto table = std::make_shared<RectangleXZ>(-3, -2, 3, 2, 0, haze_glass);
@@ -40,29 +41,29 @@ focal_distance = glm::length(lookfrom - lookat);
 // auto table_wood = std::make_shared<RectangleXZ>(-3, -2, 3, 2, -0.1, wood);
 // world.add(table_wood); 
 
-world.add(std::make_shared<core::Sphere>(glm::vec3(-4, 4, -4), 2.5, light)); 
+// world.add(std::make_shared<core::Sphere>(glm::vec3(-4, 4, -4), 2.5, light)); 
 // world.add(std::make_shared<Sphere>(glm::vec3(4, 8, -4), 2.5, light)); 
 
-lights.add(std::make_shared<core::Sphere>(glm::vec3(-4, 4, -4), 2.5, light)); 
+// lights.add(std::make_shared<core::Sphere>(glm::vec3(-4, 4, -4), 2.5, light)); 
 // lights.add(std::make_shared<Sphere>(glm::vec3(4, 8, -4), 2.5, light)); 
 
-auto turqoise_ball = std::make_shared<core::Sphere>(glm::vec3(0), 0.5, metal_white); 
-world.add(turqoise_ball);
+// auto turqoise_ball = std::make_shared<core::Sphere>(glm::vec3(0.1), 0.5, disney); 
+// world.add(turqoise_ball);
 
 
-// std::string mesh_path = "res/objects/happy.obj";
-// auto bunny_mesh = std::make_shared<core::Mesh>(mesh_path, hazy_gold, true);
+std::string mesh_path = "res/objects/nefertiti.obj";
+auto bunny_mesh = std::make_shared<core::Mesh>(mesh_path, disney, true);
 
-// auto start_load = std::chrono::high_resolution_clock::now(); 
+auto start_load = std::chrono::high_resolution_clock::now(); 
 
 
-// std::shared_ptr<core::Object> bunny = std::make_shared<optim::BVHNode>(bunny_mesh -> mesh, 0, 1);
-// auto end_load = std::chrono::high_resolution_clock::now();
-// auto load_time = std::chrono::duration_cast<std::chrono::seconds>(end_load - start_load);
-// std::cout << BOLDCYAN << "[ STATUS ]" << RESET << " Total object load time for " << mesh_path<<   " is ~" << load_time.count() << " seconds" << std::endl;
+std::shared_ptr<core::Object> bunny = std::make_shared<optim::BVHNode>(bunny_mesh -> mesh, 0, 1);
+auto end_load = std::chrono::high_resolution_clock::now();
+auto load_time = std::chrono::duration_cast<std::chrono::seconds>(end_load - start_load);
+std::cout << BOLDCYAN << "[ STATUS ]" << RESET << " Total object load time for " << mesh_path<<   " is ~" << load_time.count() << " seconds" << std::endl;
 
-// bunny = std::make_shared<core::RotateY>(bunny, -180);
-// bunny = std::make_shared<core::Translate>(bunny, glm::vec3(0, -0.7, 0));
+bunny = std::make_shared<core::RotateY>(bunny, -180);
+bunny = std::make_shared<core::Translate>(bunny, glm::vec3(0, -0.7, 0));
 
-// world.add(bunny); 
+world.add(bunny); 
 

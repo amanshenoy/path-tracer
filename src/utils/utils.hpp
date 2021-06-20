@@ -25,7 +25,7 @@ namespace utils {
     };
 
     class PDF; 
-    struct scatter_record {
+    struct scatter_details {
         core::Ray specular_ray;
         bool is_specular;
         glm::vec3 attenuation;
@@ -36,9 +36,9 @@ namespace utils {
         double pdf_value;
     };
 
-    class ONB {
+    class LocalBasis {
         public:
-            ONB() {}
+            LocalBasis() {}
 
             inline glm::vec3 operator[](int i) const { return axis[i]; }
 

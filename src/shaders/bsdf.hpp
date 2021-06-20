@@ -29,7 +29,7 @@ namespace bsdf {
     struct SurfaceParameters {
         glm::vec3 position;
         glm::mat3 worldToTangent;
-        utils::ONB basis; 
+        utils::LocalBasis basis; 
         float error;
         glm::vec3 view;
         glm::vec3 baseColor;

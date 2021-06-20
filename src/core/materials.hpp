@@ -13,7 +13,7 @@ namespace core {
 
     class Material {
     public:
-        virtual bool bsdf(const Ray& ray_in, const utils::hit_details& rec, utils::scatter_record& srec) {return false;};
+        virtual bool bsdf(const Ray& ray_in, const utils::hit_details& rec, utils::scatter_details& srec) {return false;};
         virtual double scattering_pdf(const Ray& ray_in, const utils::hit_details& rec, const Ray& scattered) {return 0;}
         virtual glm::vec3 emitted(const Ray& ray_in, const utils::hit_details& rec, double u, double v, const glm::vec3& p) {return glm::vec3(0);};
         virtual glm::vec3 get_albedo() {return alb;}
@@ -78,7 +78,7 @@ namespace core {
             Emitter(std::shared_ptr<Texture> a) : emit(a) {}
             Emitter(glm::vec3 c) : emit(std::make_shared<SolidColor>(c)) {}
 
-            virtual bool bsdf(const Ray& r_in, const utils::hit_details& rec, utils::scatter_record& srec) override {
+            virtual bool bsdf(const Ray& r_in, const utils::hit_details& rec, utils::scatter_details& srec) override {
                 return false;
             }
             virtual glm::vec3 emitted(const Ray& ray_in, const utils::hit_details& rec,double u, double v, const glm::vec3& p) override {
@@ -94,7 +94,7 @@ namespace core {
     class Metal : public Material {
     public:
         Metal(const glm::vec3& a, double f) : alb(a), fuzz(f < 1 ? f : 1){}
-        virtual bool bsdf(const Ray& ray_in, const utils::hit_details& rec, utils::scatter_record& srec) override;
+        virtual bool bsdf(const Ray& ray_in, const utils::hit_details& rec, utils::scatter_details& srec) override;
         inline virtual glm::vec3 emitted(const Ray& ray_in, const utils::hit_details& rec, double u, double v, const glm::vec3& p) override { return glm::vec3(0,0,0);}
         inline glm::vec3 get_albedo() override {return alb;}
     public: 
@@ -105,7 +105,7 @@ namespace core {
     class Dielectric : public Material {
     public:
         Dielectric(double refraction_index, double f) : ir(refraction_index), fuzz(f < 1 ? f : 1), alb(glm::vec3(0)){}
-        virtual bool bsdf(const Ray& ray_in, const utils::hit_details& rec, utils::scatter_record& srec) override;
+        virtual bool bsdf(const Ray& ray_in, const utils::hit_details& rec, utils::scatter_details& srec) override;
         inline virtual glm::vec3 emitted(const Ray& ray_in, const utils::hit_details& rec, double u, double v, const glm::vec3& p) override { return glm::vec3(0,0,0);}
         inline glm::vec3 get_albedo() override {return alb;}
     public: 
@@ -118,52 +118,46 @@ namespace core {
 
     class Lambertian : public Material {
     public:
-        Lambertian(const glm::vec3& a) : albedo(std::make_shared<SolidColor>(a)){}
+        Lambertian(const glm::vec3& a) : albedo(std::make_shared<SolidColor>(a)), alb(a){}
         Lambertian(std::shared_ptr<Texture> a) : albedo(a) {}
 
-        virtual bool bsdf(const Ray& ray_in, const utils::hit_details& rec, utils::scatter_record& srec) override;
+        virtual bool bsdf(const Ray& ray_in, const utils::hit_details& rec, utils::scatter_details& srec) override;
         virtual double scattering_pdf(const Ray& ray_in, const utils::hit_details& rec, const Ray& scattered) override; 
         inline virtual glm::vec3 emitted(const Ray& ray_in, const utils::hit_details& rec,double u, double v, const glm::vec3& p) override { return glm::vec3(0);}
-
+        inline glm::vec3 get_albedo() override {return alb;}
     public: 
         std::shared_ptr<Texture> albedo; 
         glm::vec3 alb; 
     }; 
 
-    // class Isotropic : public Material {
-    // public:
-    //     Isotropic(glm::vec3 c) : albedo(std::make_shared<SolidColor>(c)) {}
-    //     Isotropic(std::shared_ptr<Texture> a) : albedo(a) {}
+    class Isotropic : public Material {
+    public:
+        Isotropic(glm::vec3 c) : albedo(std::make_shared<SolidColor>(c)), alb(c) {}
+        Isotropic(std::shared_ptr<Texture> a) : albedo(a) {}
 
-    //     virtual bool bsdf(const Ray& ray_in, const hit_details& rec, glm::vec3& attenuation, Ray& scattered) override;
-    //     inline virtual glm::vec3 emitted(double u, double v, const glm::vec3& p) override { return glm::vec3(0,0,0);}
+        virtual bool bsdf(const Ray& ray_in, const utils::hit_details& rec, utils::scatter_details& srec) override;
+        inline virtual double scattering_pdf(const Ray& ray_in, const utils::hit_details& rec, const Ray& scattered) override {return 0;}; 
+        inline virtual glm::vec3 emitted(const Ray& ray_in, const utils::hit_details& rec,double u, double v, const glm::vec3& p) override { return glm::vec3(0);}
+        inline glm::vec3 get_albedo() override {return alb;}
 
-    // public:
-    //     std::shared_ptr<Texture> albedo;
-    // };
-
-    // class Glossy : public Material {
-    // public:
-    //     Glossy(const glm::vec3& a, double sharpness) : albedo(std::make_shared<SolidColor>(a)){}
-    //     Glossy(std::shared_ptr<Texture> a, double sharpness) : albedo(a) {}
-
-    //     virtual bool bsdf(const Ray& ray_in, const hit_details& rec, glm::vec3& attenuation, Ray& scattered) override;
-    //     inline virtual glm::vec3 emitted(double u, double v, const glm::vec3& p) override { return glm::vec3(0,0,0);}
-
-    // public: 
-    //     std::shared_ptr<Texture> albedo;
-    //     double sharpness;  
-    // }; 
+    public:
+        glm::vec3 alb; 
+        std::shared_ptr<Texture> albedo;
+    };
 
     class Disney : public Material {
     public:
-        Disney(const glm::vec3& a) : alb(a){}
- 
-        virtual bool bsdf(const Ray& ray_in, const utils::hit_details& rec, utils::scatter_record& srec) override;
-        virtual double scattering_pdf(const Ray& ray_in, const utils::hit_details& rec, const Ray& scattered) override; 
+        Disney(const glm::vec3& a, float specular, float diffuse, float clearcoat, float transmission, bool thin);
+
+        bsdf::SurfaceParameters get_surface_point(const utils::hit_details& rec); 
+        virtual bool bsdf(const Ray& ray_in, const utils::hit_details& rec, utils::scatter_details& srec) override;
+        inline virtual double scattering_pdf(const Ray& ray_in, const utils::hit_details& rec, const Ray& scattered) override {return 0;}; 
         inline virtual glm::vec3 emitted(const Ray& ray_in, const utils::hit_details& rec,double u, double v, const glm::vec3& p) override { return glm::vec3(0);}
         inline glm::vec3 get_albedo() override {return alb;}
     public: 
         glm::vec3 alb; 
+        bsdf::SurfaceParameters surface_params;
+        float specular, diffuse, clearcoat, transmission;
+        bool thin; 
     }; 
 }

@@ -72,7 +72,7 @@ namespace core {
     glm::vec3 Sphere::random(glm::vec3& o)  {
         glm::vec3 direction = center(0.5) - o;
         auto distance_squared = pow(glm::length(direction), 2);
-        utils::ONB uvw;
+        utils::LocalBasis uvw;
         uvw.build_from_w(direction);
         return uvw.local(random_to_sphere(radius, distance_squared));
     }

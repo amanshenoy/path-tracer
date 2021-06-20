@@ -88,7 +88,6 @@ void write_image(std::string image_path, FIBITMAP* image_object){
 
 glm::vec3 shoot_ray(const core::Ray& ray, core::Background& bg, core::Object& world, core::Scene& lights, int depth, bool first, glm::vec3& first_albedo, glm::vec3& first_normal){
     utils::hit_details rec;
-    
     if (depth <= 0) return glm::vec3(0.0f);
     double infinity = std::numeric_limits<double>::infinity();
 
@@ -98,18 +97,11 @@ glm::vec3 shoot_ray(const core::Ray& ray, core::Background& bg, core::Object& wo
         return bg.get_color(ray); 
     }
 
-    utils::scatter_record srec;
+    utils::scatter_details srec;
     glm::vec3 emitted = rec.mat_ptr->emitted(ray, rec, rec.u, rec.v, rec.p);
-    // auto light_ptr = std::make_shared<ObjectPDF>(std::make_shared<Scene>(lights), rec.p);
-    // srec.imp_sampler = light_ptr; 
-    // MixturePDF p(srec.imp_sampler, srec.pdf_ptr, 1);
-
-    // srec.scattered = Ray(rec.p, light_ptr -> generate(), ray.time());
-    // srec.pdf_value = light_ptr -> value(srec.scattered.direction());
 
     srec.scattered = core::Ray(rec.p, glm::vec3(0, 0, 1), ray.time());
     srec.pdf_value = 1;
-
 
     if (!rec.mat_ptr -> bsdf(ray, rec, srec))
         return emitted;
@@ -123,6 +115,9 @@ glm::vec3 shoot_ray(const core::Ray& ray, core::Background& bg, core::Object& wo
         return srec.attenuation
              * shoot_ray(srec.specular_ray, bg, world, lights, depth-1,false, first_albedo, first_normal);
     }
+
+    // This is the code to be able to importance sample lights and has been commented out 
+    //                  because it has not been reconfigured to work with the Disney BSDF
 
     // auto light_ptr = std::make_shared<ObjectPDF>(std::make_shared<Scene>(lights), rec.p);
     // srec.imp_sampler = light_ptr; 
@@ -168,7 +163,8 @@ int main(int argc, char* argv[]){
     std::string scene = argv[1];
 
     core::Scene lights; 
-    core::Scene world = GetScene(aspect_ratio, lookfrom, lookat, height, width, fovy, scene, lights, aperture, focal_distance);
+    core::ImageBG background("res/backgrounds/blaubeuren_night_2k.hdr", 0.8, 0.4);
+    core::Scene world = GetScene(aspect_ratio, lookfrom, lookat, height, width, fovy, scene, lights, aperture, focal_distance, background);
     core::Camera cam(fovy, aspect_ratio, lookfrom, lookat, up, aperture, focal_distance, 0.0f, 1.0f); 
 
     FIBITMAP* image  = FreeImage_Allocate(width, height, 24); 
@@ -179,8 +175,6 @@ int main(int argc, char* argv[]){
     std::string albedo_path = std::string("output/albedo_maps/") + scene + std::string(".png");
     std::string normal_path = std::string("output/normal_maps/") + scene + std::string(".png");
 
-    // GradientBG background(glm::vec3(0), glm::vec3(0), 4); 
-    core::ImageBG background("res/backgrounds/chinese_garden.hdr");
     //////////////////////////////////////////////////////////////////////
 
     srand(time(NULL));

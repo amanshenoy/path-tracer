@@ -16,8 +16,12 @@ Disney BRDF for broad variety of material choices
 # You may obtain a copy of the License at
 # http://www.apache.org/licenses/LICENSE-2.0 
 
-More then 90% of this code has been taken from https://github.com/schuttejoe/Selas, 
-and re-ordered. Very little of the bsdf namespace has been written by myself 
+This code has been taken from https://github.com/schuttejoe/Selas, 
+and re-ordered and changed a little. 
+
+Very little of the bsdf namespace has been written by myself and 
+most of this code is unused. Whatever is used, is used by the 
+core::Disney subclass in materials.hpp and materials.cpp  
 
 *////////////////////////////////////////////////////////////////
 
@@ -285,7 +289,7 @@ namespace bsdf {
     }
 
     glm::vec3 DisneyFresnel(const SurfaceParameters& surface, const glm::vec3& wo, const glm::vec3& wm, const glm::vec3& wi){
-        float dotHV = abs(glm::dot(wm, wo));
+        float dotHV = Absf(glm::dot(wm, wo));
 
         glm::vec3 tint = CalculateTint(surface.baseColor);
 
@@ -318,8 +322,8 @@ namespace bsdf {
         glm::vec3 f = DisneyFresnel(surface, wo, wm, wi);
 
         GgxVndfAnisotropicPdf(wi, wm, wo, ax, ay, fPdf, rPdf);
-        fPdf *= (1.0f / (4 * abs(glm::dot(wo, wm))));
-        rPdf *= (1.0f / (4 * abs(glm::dot(wi, wm))));
+        fPdf *= (1.0f / (4 * Absf(glm::dot(wo, wm))));
+        rPdf *= (1.0f / (4 * Absf(glm::dot(wi, wm))));
 
         return d * gl * gv * f / (4.0f * dotNL * dotNV);
     }
@@ -493,8 +497,8 @@ namespace bsdf {
             glm::vec3 specular = EvaluateDisneyBRDF(surface, wo, wm, wi, forwardMetallicPdfW, reverseMetallicPdfW);
             
             reflectance += specular;
-            forwardPdf += pBRDF * forwardMetallicPdfW / (4 * abs(glm::dot(wo, wm)));
-            reversePdf += pBRDF * reverseMetallicPdfW / (4 * abs(glm::dot(wi, wm)));
+            forwardPdf += pBRDF * forwardMetallicPdfW / (4 * Absf(glm::dot(wo, wm)));
+            reversePdf += pBRDF * reverseMetallicPdfW / (4 * Absf(glm::dot(wi, wm)));
         }
 
         reflectance = reflectance * Absf(dotNL);
@@ -579,8 +583,9 @@ namespace bsdf {
             sample.flags = SurfaceEventFlags::eScatterEvent;
             sample.reflectance = G1v * surface.baseColor;
 
-            float jacobian = (4 * abs(glm::dot(wo, wm)));
+            float jacobian = (4 * Absf(glm::dot(wo, wm)));
             pdf = F / jacobian;
+            // std::cout << jacobian << "\n";
         }
         else {
             if(thin) {
@@ -609,9 +614,10 @@ namespace bsdf {
 
             wi = glm::normalize(wi);
             
-            float dotLH = abs(glm::dot(wi, wm));
+            float dotLH = Absf(glm::dot(wi, wm));
             float jacobian = dotLH / (pow(dotLH + surface.relativeIOR * dotVH, 2));
             pdf = (1.0f - F) / jacobian;
+            // std::cout << jacobian << "\n";
         }
 
         if(CosTheta(wi) == 0.0f) {
@@ -619,6 +625,7 @@ namespace bsdf {
             sample.reversePdfW = 0.0f;
             sample.reflectance = glm::vec3(0);
             sample.wi = glm::vec3(0);
+            // std::cout << "HM\n";
             return false;
         }
 
@@ -628,9 +635,13 @@ namespace bsdf {
         }
 
         // -- calculate VNDF pdf terms and apply Jacobian and Fresnel sampling adjustments
+        
+
         GgxVndfAnisotropicPdf(wi, wm, wo, tax, tay, sample.forwardPdfW, sample.reversePdfW);
+        // std::cout << sample.forwardPdfW << " " << sample.reversePdfW << "\n";
         sample.forwardPdfW *= pdf;
         sample.reversePdfW *= pdf;
+        // std::cout << sample.forwardPdfW << " " << sample.reversePdfW << "\n";
 
         // -- convert wi back to world space
         // sample.wi = glm::normalize(wi * glm::transpose(surface.worldToTangent));
@@ -641,16 +652,13 @@ namespace bsdf {
 
     bool SampleDisneyDiffuse(const SurfaceParameters& surface, glm::vec3 v, bool thin, BsdfSample& sample) {
         glm::vec3 wo = (glm::transpose(surface.basis.transform) * v);
-        // glm::vec3 wo = glm::normalize(surface.basis.local(v));
 
         float sign = Sign(CosTheta(wo));
-        // std::cout << sign;
 
         // -- Sample cosine lobe
         float r0 = utils::sampler::random_double();
         float r1 = utils::sampler::random_double();
         glm::vec3 wi = - sign * SampleCosineWeightedHemisphere(r0, r1);
-        // glm::vec3 wi = random_cosine_direction(r0, r1);
 
         glm::vec3 wm = glm::normalize(wi + wo);
 

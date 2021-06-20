@@ -19,7 +19,7 @@ namespace utils {
             virtual glm::vec3 generate() override;
 
         public:
-            ONB uvw;
+            LocalBasis uvw;
     };
 
     class ObjectPDF : public PDF {
