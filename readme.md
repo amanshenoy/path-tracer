@@ -5,9 +5,10 @@ The below 3D model for the *Head of Michelangelo's David* bust was taken from [t
 
 
 <p align="center">
-  <img src="output/noisy_renders/Statue.png" />
-  <img src="output/denoised_renders/VaryingFuzz.png" />
-  <img src="output/denoised_renders/Marbles.png" />
+  <kbd>
+    <img src="output/noisy_renders/Statue.png" />
+    <img src="output/denoised_renders/VaryingFuzz.png" />
+  </kbd>
 </p>
 
 This repository contains the implementation of a physically based monte carlo path tracer in C++. The project avoids the use of graphics API's and attempts to implement simple physically based rendering effects from scratch. 
@@ -45,7 +46,9 @@ The pre-compiled zip file (unzipped, includes a `bin` and a `lib` folder) needs 
 
 ## Usage
 <p align="center">
-  <img src="output/denoised_renders/GlowRoom.png" />
+  <kbd>
+      <img src="output/denoised_renders/Marbles.png" />
+  </kbd>
 </p>
 
 A sample binary has been uploaded with the repo (compiled on x86, as a 64 bit application), but its unlikely that it would generally work even on a system with the same configuration (try anyway, it just might). To compile in a device specific manner, you can create a Makefile using cmake (`CMakeLists.txt` given) or use the given `Makefile`. 
