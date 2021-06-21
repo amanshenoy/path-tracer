@@ -80,4 +80,4 @@ The Disney BSDF, though poorly incorporated and incomplete, takes a lot from [th
 And just like everyone ever who has written a path tracer, constant references were made to [Physically Based Rendering by *Matt Pharr, Wenzel Jakob, and Greg Humphreys*](https://www.pbr-book.org/) and its [repository](https://github.com/mmp/pbrt-v3). 
 
 ## Note 
-This was more or less a pet project to be able to learn the fundamental basics of path tracing, and with every feature I added, I got carried away. I have licensed this project under the MIT license, and do what you may with the code but I would highly recommend not to re-use the `bsdf` namespace and the `core::Disney` class, since some of the lobe calculations are off. 
+This was more or less a pet project to be able to learn the fundamental basics of path tracing, and with every feature I added, I got carried away. I have licensed this project under the Zlib license, and do what you may with the code but I would highly recommend not to re-use the `bsdf` namespace and the `core::Disney` class, since some of the lobe calculations are off. 
