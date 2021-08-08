@@ -3,7 +3,7 @@
 #include "../utils/utils.hpp"
 #include "background.hpp"
 #include "../dependancies/colors.hpp"
-#include "../dependancies/stb_image.h"
+#include "../dependancies/stb/stb_image.h"
 
 namespace core {
     glm::vec3 GradientBG::get_color(const Ray& ray_in){

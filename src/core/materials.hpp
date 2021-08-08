@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../dependancies/stb_image.h"
+#include "../dependancies/stb/stb_image.h"
 #include "../utils/utils.hpp"
 #include "ray.hpp"
 

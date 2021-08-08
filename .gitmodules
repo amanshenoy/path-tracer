@@ -1,0 +1,12 @@
+[submodule "glm"]
+        path = src/dependancies/glm
+        url = https://github.com/g-truc/glm
+[submodule "stb"]
+        path = src/dependancies/stb
+        url = https://github.com/nothings/stb
+[submodule "FreeImage"]
+        path = src/dependancies/FreeImage
+        url = https://freeimage.sourceforge.io/
+[submodule "OpenImageDenoise"]
+        path = src/dependancies/OpenImageDenoise 
+        url = https://github.com/OpenImageDenoise/oidn

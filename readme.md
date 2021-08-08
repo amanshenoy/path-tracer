@@ -1,5 +1,5 @@
 # Physically Based Path Tracer 
-The below 3D model for the *Head of Michelangelo's David* bust was taken from [this link](https://www.myminifactory.com/object/3d-print-head-of-michelangelo-s-david-52645). Other `.obj` files taken from [The Stanford 3D Scanning repository](http://graphics.stanford.edu/data/3Dscanrep/)
+The below 3D model for the *Head of Michelangelo's David* bust was taken from [here](https://www.myminifactory.com/object/3d-print-head-of-michelangelo-s-david-52645). Other `.obj` models taken from [The Stanford 3D Scanning repository](http://graphics.stanford.edu/data/3Dscanrep/)
 |:-------------------------:|
 ![Head of David](output/denoised_renders/David.png)
 
@@ -40,9 +40,7 @@ Noisy Render (Output)             |  Normal map | Albedo map | Denoised Image
 
 Since the application runs on the CPU, samples per pixel needs to be limited to obtain reasonable render times (even with multi-threading). 
 
-The images shown above are denoised using [Intel® Open Image Denoise](https://www.openimagedenoise.org/). The pre-compiled binaries (given in the website) fit right into this repository to call the shell script `bin/denoise`, which manages the whole denoising process and conversions. 
-
-The pre-compiled zip file (unzipped, includes a `bin` and a `lib` folder) needs to be moved into `src/dependancies/`, for the shell script `denoise` to work. 
+The images shown above are denoised using [Intel® Open Image Denoise](https://www.openimagedenoise.org/). The pre-compiled zip file (unzipped, includes a `bin` and a `lib` folder) needs to be moved into `src/dependancies/`, for the shell script `denoise` to work. 
 
 ## Usage
 <p align="center">
@@ -51,25 +49,30 @@ The pre-compiled zip file (unzipped, includes a `bin` and a `lib` folder) needs 
   </kbd>
 </p>
 
-A sample binary has been uploaded with the repo (compiled on x86, as a 64 bit application), but its unlikely that it would generally work even on a system with the same configuration (try anyway, it just might). To compile in a device specific manner, you can create a Makefile using cmake (`CMakeLists.txt` given) or use the given `Makefile`. 
+A sample binary has been uploaded with the repo (compiled on x86, as a 64 bit application), but its unlikely that it would generally work even on a system with the same configuration (try anyway, it just might). 
 
-After creating the Makefile using cmake and making/compiling the project (`cmake .` followed by `make`), the compiled binary (`path-tracer`) can be found in `bin/` and is to be used with a single command line argument - the name of the scene in `src/scenes/`. (The folder `src/scenes/` contains implementation of all the scenes in this readme file and few others. The `.scene.h` files are just C++, and the files were created mostly just for organisational purposes)
+`CMakeLists.txt` is given and the project can easily be compiled using the cmake build system.
 
-    > ./bin/path-tracer GlowRoom
+    mkdir build && cd build 
+    cmake .. 
+    make
 
-Running this should show a progress bar, after which 3 images will be stored in `output` - the noisy render (Primary output), an albedo image, and a normal map (To aid the denoising process). After these three images have been generated the `denoise` binary can be run in the same way that the main one was 
+After compiling the project, the compiled binary (`path-tracer`) can be found in the `bin/` directory and is to be used with a single command line argument - the name of the scene in `src/scenes/`. (The folder `src/scenes/` contains implementation of all the scenes in this readme file)
 
-    > ./bin/denoise GlowRoom
+    ./bin/path-tracer GlowRoom
+
+Running this should show a progress bar, after which 3 images will be stored in `output/noisy_render`, `output/albedo_maps`, and `output/normal_maps`. After these three images have been generated, the `denoise` shell script can be run to denoise the image 
+
+    ./bin/denoise GlowRoom
 
 The resolution of the output render and the samples per pixel have been hard-coded in `main.cpp`
 
 ## Dependancies 
 
-A simple `OpenMP` call was used to multithread the loop which shoots multiple samples per pixel. The `OpenMP` dependancy is included by the `CmakeLists.txt`, but can easily be removed and worked without. 
-
-The project uses libraries for reading and writing images ([stb_image](https://github.com/nothings/stb) and [FreeImage](https://freeimage.sourceforge.io/)) and for convenience. [GLM](https://github.com/g-truc/glm) was used for mathematical data types (vectors, matrices, etc.) and operations, but can easily be replaced by a few structs. [ImageMagick](https://github.com/ImageMagick/ImageMagick) is also required for commands in the `denoise` shell script.
-
-More about depandancy set up in the sub-folder `src/dependancies`
+* `OpenMP` was used for multi-threading the ray shooting and BVH tree building. 
+* ([stb_image](https://github.com/nothings/stb) and [FreeImage](https://freeimage.sourceforge.io/)) were used to handle images. 
+* [GLM](https://github.com/g-truc/glm) was used for mathematical data types (vectors, matrices, etc.) and operations. 
+* [ImageMagick](https://github.com/ImageMagick/ImageMagick) is required for conversions in the `denoise` shell script.
 
 ## Resources
 
@@ -80,4 +83,5 @@ The Disney BSDF, though poorly incorporated and incomplete, takes a lot from [th
 And just like everyone ever who has written a path tracer, constant references were made to [Physically Based Rendering by *Matt Pharr, Wenzel Jakob, and Greg Humphreys*](https://www.pbr-book.org/) and its [repository](https://github.com/mmp/pbrt-v3). 
 
 ## Note 
-This was more or less a pet project to be able to learn the fundamental basics of path tracing, and with every feature I added, I got carried away. I have licensed this project under the Zlib license, and do what you may with the code but I would highly recommend not to re-use the `bsdf` namespace and the `core::Disney` class, since some of the lobe calculations are off. 
+This was more or less a pet project to be able to learn the fundamental basics of path tracing, and with every feature I added, I ended up wanting to add more.  
+I have licensed this project under the Zlib license, and do what you may with the code but I would highly recommend not to re-use the `bsdf` namespace and the `core::Disney` class, since some of the lobe calculations are off. 

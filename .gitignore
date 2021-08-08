@@ -1,7 +1,4 @@
-CMakeFiles/
-CMakeCache.txt
-cmake_install.cmake
-src/dependacies/
+build/
 .vscode/settings.json
 .vscode/
 settings.json

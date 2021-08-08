@@ -4,7 +4,7 @@ project (Path-Tracer)
 
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -std=c++17")
 set (source_dir "${PROJECT_SOURCE_DIR}/src/")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 
 FIND_LIBRARY(FreeImage_LIBRARY NAMES FreeImage HINTS ${PROJECT_SOURCE_DIR}/src/dependancies)
 #FIND_LIBRARY(OpenImageDenoise NAMES OpenImageDenoise HINTS ${PROJECT_SOURCE_DIR}/src/dependancies)
