@@ -40,7 +40,7 @@ Noisy Render (Output)             |  Normal map | Albedo map | Denoised Image
 
 Since the application runs on the CPU, samples per pixel needs to be limited to obtain reasonable render times (even with multi-threading). 
 
-The images shown above are denoised using [Intel® Open Image Denoise](https://www.openimagedenoise.org/). The pre-compiled zip file (unzipped, includes a `bin` and a `lib` folder) needs to be moved into `src/dependancies/`, for the shell script `denoise` to work. 
+The images shown above are denoised using [Intel® Open Image Denoise](https://www.openimagedenoise.org/). The pre-compiled zip file from their website (unzipped, includes a `bin` and a `lib` folder) needs to be moved into `src/dependancies/`, for the shell script `denoise` to work. 
 
 ## Usage
 <p align="center">
@@ -84,4 +84,5 @@ And just like everyone ever who has written a path tracer, constant references w
 
 ## Note 
 This was more or less a pet project to be able to learn the fundamental basics of path tracing, and with every feature I added, I ended up wanting to add more.  
+
 I have licensed this project under the Zlib license, and do what you may with the code but I would highly recommend not to re-use the `bsdf` namespace and the `core::Disney` class, since some of the lobe calculations are off. 
