@@ -8,7 +8,7 @@ The below 3D model for the *Head of Michelangelo's David* bust was taken from [h
   <kbd>
     <img src="output/noisy_renders/Statue.png" />
     <img src="output/denoised_renders/VaryingFuzz.png" />
-    <img src="output/denoised_renders/Buddha.png" />
+    <img src="output/denoised_renders/Marbles.png" />
   </kbd>
 </p>
 
@@ -46,7 +46,7 @@ The images shown above are denoised using [Intel® Open Image Denoise](https://w
 ## Usage
 <p align="center">
   <kbd>
-      <img src="output/denoised_renders/Marbles.png" />
+    <img src="output/denoised_renders/Buddha.png" />
   </kbd>
 </p>
 
