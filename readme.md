@@ -8,6 +8,7 @@ The below 3D model for the *Head of Michelangelo's David* bust was taken from [h
   <kbd>
     <img src="output/noisy_renders/Statue.png" />
     <img src="output/denoised_renders/VaryingFuzz.png" />
+    <img src="output/denoised_renders/Buddha.png" />
   </kbd>
 </p>
 
