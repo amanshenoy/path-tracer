@@ -149,7 +149,7 @@ int main(int argc, char* argv[]){
 
     double aspect_ratio; 
     int height = 512;
-    int width;  
+    int width = 512;  
     int samples_per_pixel = 15;  
     int max_depth = 10;
  
