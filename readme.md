@@ -47,9 +47,11 @@ The images shown above are denoised using [Intel® Open Image Denoise](https://w
 <p align="center">
   <kbd>
     <img src="output/denoised_renders/Test.png" />
-    <img src="output/denoised_renders/GlowRoom.png" />
   </kbd>
 </p>
+
+![](output/denoised_renders/GlowRoom.png)  | ![](output/denoised_renders/CornellBox.png)
+:-------------------------:|:-------------------------:
 
 A sample binary has been uploaded with the repo (compiled on x86, as a 64 bit application), but its unlikely that it would generally work even on a system with the same configuration (try anyway, it just might). 
 
