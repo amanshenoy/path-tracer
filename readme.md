@@ -33,9 +33,6 @@ The images shown above are denoised using [Intel® Open Image Denoise](https://w
   </kbd>
 </p>
 
-![](output/denoised_renders/GlowRoom.png)  | ![](output/denoised_renders/CornellBox.png)
-:-------------------------:|:-------------------------:
-
 - [x] Motion Blur 
 - [x] Antialiasing
 - [x] Depth of Field
@@ -47,6 +44,9 @@ The images shown above are denoised using [Intel® Open Image Denoise](https://w
 - [x] Optimized and Multithreaded mesh BVH tree building 
 - [x] Non-ideal materials and BSDF's (Disney BSDF)
 - [ ] CUDA optimized
+
+![](output/denoised_renders/GlowRoom.png)  | ![](output/denoised_renders/CornellBox.png)
+:-------------------------:|:-------------------------:
 
 ## Usage
 
@@ -68,7 +68,7 @@ Running this should show a progress bar, after which 3 images will be stored in 
 
 The resolution of the output render and the samples per pixel have been hard-coded in `main.cpp`
 
-## Dependancies 
+## Dependencies 
 
 * `OpenMP` was used for multi-threading the ray shooting and BVH tree building. 
 * ([stb_image](https://github.com/nothings/stb) and [FreeImage](https://freeimage.sourceforge.io/)) were used to handle images. 
