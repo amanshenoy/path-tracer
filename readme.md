@@ -46,7 +46,8 @@ The images shown above are denoised using [Intel® Open Image Denoise](https://w
 ## Usage
 <p align="center">
   <kbd>
-    <img src="output/denoised_renders/Buddha.png" />
+    <img src="output/denoised_renders/Test.png" />
+    <img src="output/denoised_renders/GlowRoom.png" />
   </kbd>
 </p>
 
