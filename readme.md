@@ -16,23 +16,6 @@ This repository contains the implementation of a physically based monte carlo pa
 
 This is a project I essentially come to in my free time and is something I intend to update sporadically. If you have read the code, or tried to create a scene and have found any flaws or errors in the way things have been done — do feel free to leave an issue! 
 
-## Feature Tracker / To Do 
-- [x] Motion Blur 
-- [x] Antialiasing
-- [x] Depth of Field
-- [x] Bounding Volume Heirarchies 
-- [x] Multithread pixel processing
-- [x] Add `.obj` object support   
-- [x] Importance Sampling 
-- [x] HDR Environment maps
-- [ ] ~~Find a way to serialize BVH tree object (for re-use for large meshes)~~ 
-- [x] Optimize and Multithread mesh BVH tree building 
-- [ ] ~~Optimize ray-triangle intersection routine~~ 
-- [x] Implement additional BSDF's (Disney BSDF) and materials (sort of?)
-- [ ] ~~Incorporate CUDA, get full rendering to happen on GPU~~
-
-On halt for now, spending too much time on this 
-
 ## Denoiser 
 
 Noisy Render (Output)             |  Normal map | Albedo map | Denoised Image
@@ -43,7 +26,7 @@ Since the application runs on the CPU, samples per pixel needs to be limited to 
 
 The images shown above are denoised using [Intel® Open Image Denoise](https://www.openimagedenoise.org/). The pre-compiled zip file from their website (unzipped, includes a `bin` and a `lib` folder) needs to be moved into `src/dependancies/`, for the shell script `denoise` to work. 
 
-## Usage
+## Features  
 <p align="center">
   <kbd>
     <img src="output/denoised_renders/Test.png" />
@@ -52,6 +35,20 @@ The images shown above are denoised using [Intel® Open Image Denoise](https://w
 
 ![](output/denoised_renders/GlowRoom.png)  | ![](output/denoised_renders/CornellBox.png)
 :-------------------------:|:-------------------------:
+
+- [x] Motion Blur 
+- [x] Antialiasing
+- [x] Depth of Field
+- [x] Bounding Volume Heirarchies 
+- [x] Multithreaded pixel processing
+- [x] `.obj` meshes   
+- [x] Importance Sampling 
+- [x] HDR Environment maps
+- [x] Optimized and Multithreaded mesh BVH tree building 
+- [x] Non-ideal materials and BSDF's (Disney BSDF)
+- [ ] CUDA optimized
+
+## Usage
 
 A sample binary has been uploaded with the repo (compiled on x86, as a 64 bit application), but its unlikely that it would generally work even on a system with the same configuration (try anyway, it just might). 
 
