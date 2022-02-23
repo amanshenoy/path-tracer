@@ -1,6 +1,6 @@
 # Physically Based Path Tracer 
 
-![](output/noisy_renders/David.png)  | ![](output/noisy_renders/CornellBox.png)
+![](output/denoised_renders/David.png)  | ![](output/denoised_renders/CornellBox.png)
 :-------------------------:|:-------------------------:
 
 <p align="center">
