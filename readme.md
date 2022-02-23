@@ -1,6 +1,6 @@
 # Physically Based Path Tracer 
 
-![](David.png)  | ![](demonstrations/CornellBox.png)
+![](output/noisy_renders/David.png)  | ![](output/noisy_renders/CornellBox.png)
 :-------------------------:|:-------------------------:
 
 <p align="center">
@@ -11,11 +11,12 @@
   </kbd>
 </p>
 
-Note: ___The below 3D model for the *Head of Michelangelo's David* bust was taken from [here](https://www.myminifactory.com/object/3d-print-head-of-michelangelo-s-david-52645). Other `.obj` models taken from [The Stanford 3D Scanning repository](http://graphics.stanford.edu/data/3Dscanrep/)___
-
 This repository contains the implementation of a physically based monte carlo path tracer in C++. The project avoids the use of graphics API's and attempts to implement simple physically based rendering effects from scratch. 
 
 This is a project I essentially come to in my free time and is something I intend to update sporadically. If you have read the code, or tried to create a scene and have found any flaws or errors in the way things have been done — do feel free to leave an issue! 
+
+Note: ___The above 3D model for the *Head of Michelangelo's David* bust was taken from [here](https://www.myminifactory.com/object/3d-print-head-of-michelangelo-s-david-52645). Other `.obj` models taken from [The Stanford 3D Scanning repository](http://graphics.stanford.edu/data/3Dscanrep/)___
+
 
 ## Denoiser 
 
