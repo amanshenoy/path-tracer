@@ -1,8 +1,7 @@
 # Physically Based Path Tracer 
-The below 3D model for the *Head of Michelangelo's David* bust was taken from [here](https://www.myminifactory.com/object/3d-print-head-of-michelangelo-s-david-52645). Other `.obj` models taken from [The Stanford 3D Scanning repository](http://graphics.stanford.edu/data/3Dscanrep/)
-|:-------------------------:|
-![Head of David](output/denoised_renders/David.png)
 
+![](David.png)  | ![](demonstrations/CornellBox.png)
+:-------------------------:|:-------------------------:
 
 <p align="center">
   <kbd>
@@ -11,6 +10,8 @@ The below 3D model for the *Head of Michelangelo's David* bust was taken from [h
     <img src="output/denoised_renders/Marbles.png" />
   </kbd>
 </p>
+
+Note: ___The below 3D model for the *Head of Michelangelo's David* bust was taken from [here](https://www.myminifactory.com/object/3d-print-head-of-michelangelo-s-david-52645). Other `.obj` models taken from [The Stanford 3D Scanning repository](http://graphics.stanford.edu/data/3Dscanrep/)___
 
 This repository contains the implementation of a physically based monte carlo path tracer in C++. The project avoids the use of graphics API's and attempts to implement simple physically based rendering effects from scratch. 
 
